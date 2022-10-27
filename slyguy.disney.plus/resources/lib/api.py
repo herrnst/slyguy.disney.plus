@@ -20,6 +20,22 @@ class API(object):
         self.logged_in = False
         self._session  = Session(HEADERS)
         self._set_authentication(userdata.get('access_token'))
+        self._set_language()
+
+    def _set_language(self):
+        self._language = 'en'
+
+        try:
+            value = json.loads(xbmc.executeJSONRPC('{{"jsonrpc":"2.0", "method":"Settings.GetSettingValue", "params":{{"setting":"{}"}}, "id":1}}'.format('locale.language')))['result']['value']
+            value = value.split('.')[-1]
+            split = value.split('_')
+
+            if split > 1:
+                split[1] = split[1].upper()
+
+            self._language = '-'.join(split)
+        except:
+            pass
 
     @mem_cache.cached(60*60, key='transaction_id')
     def _transaction_id(self):
@@ -121,7 +137,7 @@ class API(object):
 
     def search(self, query, page=1, page_size=20):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'index': 'disney_global',
             'q': query,
             'page': page,
@@ -133,7 +149,7 @@ class API(object):
 
     def video_bundle(self, family_id):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'familyId': family_id,
             'contentTransactionId': self._transaction_id(),
         }
@@ -142,7 +158,7 @@ class API(object):
 
     def series_bundle(self, series_id, page=1, page_size=12):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'seriesId': series_id,
             'episodePage': page,
             'episodePageSize': page_size,
@@ -153,7 +169,7 @@ class API(object):
 
     def episodes(self, season_ids, page=1, page_size=12):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'seasonId': season_ids,
             'episodePage': page,
             'episodePageSize': page_size,
@@ -164,7 +180,7 @@ class API(object):
 
     def collection_by_slug(self, slug, content_class):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'contentClass': content_class,
             'slug': slug,
             'contentTransactionId': self._transaction_id(),
@@ -174,7 +190,7 @@ class API(object):
 
     def set_by_setid(self, set_id, set_type, page=1, page_size=20):
         variables = {
-            'preferredLanguage': ['en-GB'],
+            'preferredLanguage': [self._language],
             'setId': set_id,
             'setType': set_type,
             'page': page,
@@ -205,7 +221,7 @@ class API(object):
     # @cached(60*60)
     # def videos(self, content_id):
     #     variables = {
-    #         'preferredLanguage': ['en-GB'],
+    #         'preferredLanguage': [self._language],
     #         'contentId': content_id,
     #         'contentTransactionId': self._transaction_id(),
     #     }
