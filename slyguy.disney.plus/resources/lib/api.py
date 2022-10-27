@@ -2,11 +2,10 @@ import json
 import uuid
 from time import time
 
-from slyguy import userdata, settings
+from slyguy import userdata, settings, mem_cache
 from slyguy.session import Session
 from slyguy.exceptions import Error
-from slyguy.util import kodi_setting
-from slyguy import mem_cache
+from slyguy.util import get_kodi_setting
 from slyguy.log import log
 
 from kodi_six import xbmc
@@ -25,15 +24,10 @@ class API(object):
         self._set_language()
 
     def _set_language(self):
-        self._language = 'en'
-
-        value = kodi_setting('locale.language')
-        if not value:
-            return
-
+        value = get_kodi_setting('locale.language', default='en')
         value = value.split('.')[-1]
+        
         split = value.split('_')
-
         if len(split) > 1:
             split[1] = split[1].upper()
 

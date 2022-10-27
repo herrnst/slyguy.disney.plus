@@ -3,7 +3,7 @@ from kodi_six import xbmcplugin
 from slyguy import plugin, gui, userdata, signals, inputstream, settings
 from slyguy.log import log
 from slyguy.exceptions import PluginError
-from slyguy.util import get_kodi_version, kodi_setting
+from slyguy.util import get_kodi_version
 
 from .api import API
 from .language import _
