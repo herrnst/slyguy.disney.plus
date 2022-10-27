@@ -55,8 +55,8 @@ msgid "Extras"
 msgstr ""
 
 msgctxt "#30014"
-msgid "Playback on Kodi {kodi_ver} requires at least version {ver_required} of the Inputstream Adaptive add-on\n"
-"This version was only recently released so should update over the next few days."
+msgid "Full support on Kodi {kodi_ver} requires at least Inputstream Adaptive Version {ver_required}\n"
+"You may experience playback issues with your current version."
 msgstr ""
 
 msgctxt "#30015"

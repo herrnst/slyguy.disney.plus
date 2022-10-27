@@ -1,9 +1,9 @@
 import random
 import datetime
 
-from kodi_six import xbmcplugin
-
 import arrow
+from kodi_six import xbmc, xbmcplugin
+
 from slyguy import plugin, gui, userdata, signals, inputstream, settings
 from slyguy.log import log
 from slyguy.exceptions import PluginError
@@ -544,9 +544,12 @@ def search(query=None, page=1, **kwargs):
 @plugin.login_required()
 def play(content_id, skip_intro=None, continue_watching=0, **kwargs):
     if KODI_VERSION > 18:
-        ver_required = '2.5.5'
+        ver_required = '2.6.0'
     else:
-        ver_required = '2.4.4'
+        if xbmc.getCondVisibility('System.Platform.Android'):
+            ver_required = '2.4.5'
+        else:
+            ver_required = '2.4.4'
 
     ia = inputstream.Widevine(
         license_key = api.get_config()['services']['drm']['client']['endpoints']['widevineLicense']['href'],
@@ -555,7 +558,7 @@ def play(content_id, skip_intro=None, continue_watching=0, **kwargs):
     )
 
     if not ia.check() or not inputstream.require_version(ver_required):
-        plugin.exception(_(_.IA_VER_ERROR, kodi_ver=KODI_VERSION, ver_required=ver_required))
+        gui.ok(_(_.IA_VER_ERROR, kodi_ver=KODI_VERSION, ver_required=ver_required))
 
     data = api.videos(content_id)
     if not data.get('videos'):
