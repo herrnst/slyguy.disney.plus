@@ -3,24 +3,25 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Email Address"
-msgstr "E-Mail-Adresse"
+msgstr "Epostadresse"
 
 msgctxt "#30002"
 msgid "Password"
-msgstr "Passwort"
+msgstr "Passord"
 
 msgctxt "#30003"
 msgid "API request failed\n"
 "Server Error: {msg}"
-msgstr ""
+msgstr "API-forespørsel feilet\n"
+"Feilmelding: {msg}"
 
 msgctxt "#30004"
 msgid "Movies"
-msgstr "Filme"
+msgstr "Filmer"
 
 msgctxt "#30005"
 msgid "Series"
-msgstr "Serien"
+msgstr "Serier"
 
 msgctxt "#30006"
 msgid "Originals"
@@ -28,42 +29,38 @@ msgstr "Originals"
 
 msgctxt "#30007"
 msgid "Search"
-msgstr "Suchen"
-
+msgstr "Søk"
 
 
 msgctxt "#30009"
 msgid "Widevine L1 Secure Device"
-msgstr "Widevine L1 Secure Device"
+msgstr "Widevine L1-sikker enhet"
 
 msgctxt "#30010"
 msgid "Suggested"
-msgstr "Empfehlungen"
+msgstr "Foreslått innhold"
 
 msgctxt "#30011"
 msgid "Featured"
-msgstr "Vorgestellt"
+msgstr "Utvalgt"
 
 msgctxt "#30012"
 msgid "Season {season}"
-msgstr "Staffel {season}"
+msgstr "Sesong {season}"
 
 msgctxt "#30013"
 msgid "Extras"
-msgstr "Extras"
+msgstr "Bonusmateriell"
 
 msgctxt "#30014"
 msgid "Full support on Kodi {kodi_ver} requires at least Inputstream Adaptive Version {ver_required}\n"
 "You may experience playback issues with your current version."
-msgstr ""
+msgstr "Full støtte på Kodi {kodi_ver} krever minst Inputstream Adaptive version {ver_required}\n"
+"Du kan støte på avspillingsproblemer med din nåværende version."
 
 msgctxt "#30015"
 msgid "Dolby Vision"
 msgstr "Dolby Vision"
-
-msgctxt "#30016"
-msgid "Sync with Disney+"
-msgstr ""
 
 msgctxt "#30018"
 msgid "HDR10"
@@ -75,112 +72,110 @@ msgstr "H.265"
 
 msgctxt "#30020"
 msgid "Skip Credits"
-msgstr ""
+msgstr "Hopp over rulletekst"
 
 msgctxt "#30021"
 msgid "Play Next Episode"
-msgstr ""
+msgstr "Spill neste episode"
 
 msgctxt "#30022"
 msgid "Play Next Recommended Movie"
-msgstr ""
+msgstr "Spill neste anbefalte film"
 
 msgctxt "#30023"
 msgid "Play without Intro"
-msgstr ""
+msgstr "Spill av uten intro"
 
 msgctxt "#30024"
 msgid "Skip Intros"
-msgstr ""
+msgstr "Hopp over introer"
 
 msgctxt "#30025"
 msgid "Play from Start"
-msgstr ""
+msgstr "Spill fra begynnelsen"
 
 msgctxt "#30026"
 msgid "Watchlist"
-msgstr ""
+msgstr "Min liste"
 
 msgctxt "#30027"
 msgid "Add to Watchlist"
-msgstr ""
+msgstr "Legg til i min liste"
 
 msgctxt "#30028"
 msgid "Remove from Watchlist"
-msgstr ""
+msgstr "Fjern fra min liste"
 
 msgctxt "#30029"
 msgid "Added to Watchlist"
-msgstr ""
+msgstr "Lagt til i min liste"
 
 msgctxt "#30041"
 msgid "Play with Intro"
-msgstr ""
+msgstr "Spill av med intro"
 
 msgctxt "#30042"
 msgid "Continue Watching"
-msgstr ""
+msgstr "Fortsett å se"
 
 msgctxt "#30043"
 msgid "You are not entitled to access this content.\n"
 "Check your subscription is valid."
-msgstr ""
+msgstr "Du har ikke tilgang til dette innholdet.\n"
+"Sjekk ditt abonnement."
 
 msgctxt "#30044"
 msgid "Your login details are in-correct.\n"
 "Please check them and try again."
-msgstr ""
+msgstr "Brukernavn eller passord var feil.\n"
+"Vennligst prøv igjen."
 
 msgctxt "#30048"
 msgid "From {time:0>8}"
-msgstr ""
+msgstr "Fra {time:0>8}"
 
 msgctxt "#30049"
 msgid "{label} [B](Available {date})[/B]"
-msgstr ""
+msgstr "{label} [B](Tilgjngelig {date})[/B]"
 
 msgctxt "#30050"
 msgid "D/MM/YYYY"
-msgstr ""
+msgstr "DD.MM.YYYY"
 
 msgctxt "#30051"
 msgid "Could not find stream data for this content"
-msgstr ""
+msgstr "Kunne ikke finne strømmedata for dette innholdet"
 
 msgctxt "#30052"
 msgid "Dolby Atmos"
-msgstr ""
+msgstr "Dolby Atmos"
 
 msgctxt "#30053"
 msgid "Profile Settings"
-msgstr ""
-
-msgctxt "#30054"
-msgid "Continue Watching"
-msgstr ""
+msgstr "Profilinnstillinger"
 
 ## COMMON SETTINGS ##
 
 msgctxt "#32055"
 msgid "Ask"
-msgstr "Nachfragen"
+msgstr "Spør"
 
 msgctxt "#32043"
 msgid "Best"
-msgstr "Höchste"
+msgstr "Best"
 
 msgctxt "#32060"
 msgid "Lowest"
-msgstr "Niedrigste"
+msgstr "Dårligst"
 
 msgctxt "#32048"
 msgid "Bypass"
-msgstr "Überspringen"
+msgstr "Bypass"
 
 msgctxt "#32054"
 msgid "Custom"
-msgstr "Angepasst"
+msgstr "Tilpasset"
 
 msgctxt "#32073"
 msgid "Disabled"
-msgstr "Deaktiviert"
+msgstr "Deaktivert"

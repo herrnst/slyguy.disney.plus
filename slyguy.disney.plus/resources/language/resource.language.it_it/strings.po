@@ -31,9 +31,7 @@ msgctxt "#30007"
 msgid "Search"
 msgstr "Cerca"
 
-msgctxt "#30008"
-msgid "Next Page ({page})"
-msgstr "Prossima pagina ({page})"
+
 
 msgctxt "#30009"
 msgid "Widevine L1 Secure Device"
@@ -65,14 +63,6 @@ msgctxt "#30015"
 msgid "Dolby Vision"
 msgstr "Dolby Vision"
 
-msgctxt "#30016"
-msgid "Select Profile"
-msgstr "Seleziona profilo"
-
-msgctxt "#30017"
-msgid "Disable profile switching in Kids profile"
-msgstr "Disabilita il cambio profilo nel profilo Bambini"
-
 msgctxt "#30018"
 msgid "HDR10"
 msgstr "HDR10"
@@ -81,17 +71,17 @@ msgctxt "#30019"
 msgid "H.265"
 msgstr "H.265"
 
-msgctxt "#30020"
-msgid "App Language"
-msgstr "Lingua dell'app"
+sgctxt "#30020"
+msgid "Skip Credits"
+msgstr ""
 
 msgctxt "#30021"
-msgid "Kodi Language"
-msgstr "Lingua di Kodi"
+msgid "Play Next Episode"
+msgstr ""
 
 msgctxt "#30022"
-msgid "Profile Language"
-msgstr "Lingua del profilo"
+msgid "Play Next Recommended Movie"
+msgstr ""
 
 msgctxt "#30023"
 msgid "Play without Intro"
@@ -121,50 +111,6 @@ msgctxt "#30029"
 msgid "Added to Watchlist"
 msgstr "Aggiungi ai visti"
 
-msgctxt "#30030"
-msgid "Add a Profile"
-msgstr "Aggiungi un profilo"
-
-msgctxt "#30031"
-msgid "Delete a Profile"
-msgstr "Elimina un profilo"
-
-msgctxt "#30032"
-msgid "Delete {name}'s profile?"
-msgstr "Elimina il profilo {name}"
-
-msgctxt "#30033"
-msgid "Profile history, watchlist, and activity will be deleted. There is no way to undo this."
-msgstr "La cronologia del profilo, l'elenco di controllo e l'attività verranno eliminati. Non c'è modo di annullare questo"
-
-msgctxt "#30034"
-msgid "Select profile to delete"
-msgstr "Seleziona il profilo da eliminare"
-
-msgctxt "#30035"
-msgid "Kids Profile?"
-msgstr "Profilo per bambini"
-
-msgctxt "#30036"
-msgid "Kid friendly interface with only content suitable for kids."
-msgstr "Interfaccia e contenuti adatti ai bambini"
-
-msgctxt "#30037"
-msgid "Profile Activated"
-msgstr "Profilo attivato"
-
-msgctxt "#30038"
-msgid "Profile Name"
-msgstr "Nome del profilo"
-
-msgctxt "#30039"
-msgid "{name} is already being used"
-msgstr "{name} è già in uso"
-
-msgctxt "#30040"
-msgid "Profile Deleted"
-msgstr "Profilo eliminato"
-
 msgctxt "#30041"
 msgid "Play with Intro"
 msgstr "Riproduci con intro"
@@ -184,18 +130,6 @@ msgid "Your login details are in-correct.\n"
 "Please check them and try again."
 msgstr "I tuoi dati di accesso sono errati.\n"
 "Per favore, controlla e riprova."
-
-msgctxt "#30045"
-msgid "Select Avatar"
-msgstr "Seleziona Avatar"
-
-msgctxt "#30046"
-msgid "Random Pick"
-msgstr "Scelta casuale"
-
-msgctxt "#30047"
-msgid "{label} (Used)"
-msgstr "{label} (Used)"
 
 msgctxt "#30048"
 msgid "From {time:0>8}"

@@ -31,7 +31,7 @@ msgid "Search"
 msgstr ""
 
 msgctxt "#30008"
-msgid "Next Page ({page})"
+msgid "Hubs"
 msgstr ""
 
 msgctxt "#30009"
@@ -60,35 +60,35 @@ msgid "Full support on Kodi {kodi_ver} requires at least Inputstream Adaptive Ve
 msgstr ""
 
 msgctxt "#30015"
-msgid "Dolby Vision"
+msgid "Dolby Vision / 4K"
 msgstr ""
 
 msgctxt "#30016"
-msgid "Select Profile"
+msgid "Sync with Disney+"
 msgstr ""
 
 msgctxt "#30017"
-msgid "Disable profile switching in Kids profile"
+msgid "{name} [PIN]"
 msgstr ""
 
 msgctxt "#30018"
-msgid "HDR10"
+msgid "HDR10 / 4K"
 msgstr ""
 
 msgctxt "#30019"
-msgid "H.265"
+msgid "H.265 / 1080P"
 msgstr ""
 
 msgctxt "#30020"
-msgid "App Language"
+msgid "Skip Credits"
 msgstr ""
 
 msgctxt "#30021"
-msgid "Kodi Language"
+msgid "Play Next Episode"
 msgstr ""
 
 msgctxt "#30022"
-msgid "Profile Language"
+msgid "Play Next Recommended Movie"
 msgstr ""
 
 msgctxt "#30023"
@@ -120,47 +120,7 @@ msgid "Added to Watchlist"
 msgstr ""
 
 msgctxt "#30030"
-msgid "Add a Profile"
-msgstr ""
-
-msgctxt "#30031"
-msgid "Delete a Profile"
-msgstr ""
-
-msgctxt "#30032"
-msgid "Delete {name}'s profile?"
-msgstr ""
-
-msgctxt "#30033"
-msgid "Profile history, watchlist, and activity will be deleted. There is no way to undo this."
-msgstr ""
-
-msgctxt "#30034"
-msgid "Select profile to delete"
-msgstr ""
-
-msgctxt "#30035"
-msgid "Kids Profile?"
-msgstr ""
-
-msgctxt "#30036"
-msgid "Kid friendly interface with only content suitable for kids."
-msgstr ""
-
-msgctxt "#30037"
-msgid "Profile Activated"
-msgstr ""
-
-msgctxt "#30038"
-msgid "Profile Name"
-msgstr ""
-
-msgctxt "#30039"
-msgid "{name} is already being used"
-msgstr ""
-
-msgctxt "#30040"
-msgid "Profile Deleted"
+msgid "Enter your Profile PIN"
 msgstr ""
 
 msgctxt "#30041"
@@ -181,17 +141,7 @@ msgid "Your login details are in-correct.\n"
 "Please check them and try again."
 msgstr ""
 
-msgctxt "#30045"
-msgid "Select Avatar"
-msgstr ""
 
-msgctxt "#30046"
-msgid "Random Pick"
-msgstr ""
-
-msgctxt "#30047"
-msgid "{label} (Used)"
-msgstr ""
 
 msgctxt "#30048"
 msgid "From {time:0>8}"
@@ -202,7 +152,7 @@ msgid "{label} [B](Available {date})[/B]"
 msgstr ""
 
 msgctxt "#30050"
-msgid "D/MM/YYYY"
+msgid "DD/MM/YYYY"
 msgstr ""
 
 msgctxt "#30051"
@@ -214,7 +164,11 @@ msgid "Dolby Atmos"
 msgstr ""
 
 msgctxt "#30053"
-msgid "Select profile when run"
+msgid "Profile Settings"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Continue Watching"
 msgstr ""
 
 ## COMMON SETTINGS ##
