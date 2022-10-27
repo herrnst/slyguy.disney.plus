@@ -3,6 +3,7 @@ from kodi_six import xbmcplugin
 from slyguy import plugin, gui, userdata, signals, inputstream, settings
 from slyguy.log import log
 from slyguy.exceptions import PluginError
+from slyguy.util import get_kodi_version
 
 from .api import API
 from .language import _
@@ -349,17 +350,26 @@ def search(query=None, page=1, **kwargs):
 @plugin.route()
 @plugin.login_required()
 def play(media_id, **kwargs):
-    url = api.media_stream(media_id)
+    kodi_ver = get_kodi_version()
+    if kodi_ver > 18:
+        ver_required = '2.5.5'
+    else:
+        ver_required = '2.4.4'
+
+    ia = inputstream.Widevine(
+        license_key = LICENSE_URL,
+        manifest_type = 'hls',
+        mimetype = 'application/vnd.apple.mpegurl',
+    )
+
+    if not ia.check() or not inputstream.require_version(ver_required):
+        plugin.exception(_(_.IA_VER_ERROR, kodi_ver=kodi_ver, ver_required=ver_required))
 
     return plugin.Item(
-        path = url,
-        inputstream = inputstream.Widevine(
-            license_key = LICENSE_URL,
-            manifest_type = 'hls',
-            mimetype = 'application/vnd.apple.mpegurl',
-        ),
+        path = api.media_stream(media_id),
+        inputstream = ia,
         headers = api.session.headers,
-    )  
+    )
 
 @plugin.route()
 @plugin.login_required()
