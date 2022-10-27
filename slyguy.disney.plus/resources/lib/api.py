@@ -16,6 +16,11 @@ from .language import _
 class APIError(Error):
     pass
 
+ERROR_MAP = {
+    'not-entitled': _.NOT_ENTITLED,
+    'idp.error.identity.bad-credentials': _.BAD_CREDENTIALS,
+}
+
 class API(object):
     def new_session(self):
         self.logged_in = False
@@ -103,6 +108,15 @@ class API(object):
             self.logout()
             raise
 
+    def _check_errors(self, data):
+        if data.get('errors'):
+            error_msg = ERROR_MAP.get(data['errors'][0].get('code')) or _(_.API_ERROR, msg=data['errors'][0].get('description') or data['errors'][0].get('code'))
+            raise APIError(error_msg)
+
+        elif data.get('error'):
+            error_msg = ERROR_MAP.get(data.get('error_code')) or _(_.API_ERROR, msg=data.get('error_description') or data.get('error_code'))
+            raise APIError(error_msg)
+
     def _do_login(self, username, password):
         headers = {
             'Authorization': 'Bearer {}'.format(API_KEY),
@@ -135,10 +149,7 @@ class API(object):
         endpoint = self.get_config()['services']['bamIdentity']['client']['endpoints']['identityLogin']['href']
         login_data = self._session.post(endpoint, json=payload).json()
 
-        if 'errors' in login_data:
-            raise APIError(_(_.LOGIN_ERROR, msg=login_data['errors'][0].get('description')))
-        elif 'error' in login_data:
-            raise APIError(_(_.LOGIN_ERROR, msg=login_data.get('error_description')))
+        self._check_errors(login_data)
 
         endpoint = self.get_config()['services']['account']['client']['endpoints']['createAccountGrant']['href']
         grant_data = self._session.post(endpoint, json={'id_token': login_data['id_token']}).json()
@@ -349,11 +360,10 @@ class API(object):
         headers = {'accept': 'application/vnd.media-service+json; version=4', 'authorization': userdata.get('access_token')}
 
         endpoint = playback_url.format(scenario=scenario)
-        data = self._session.get(endpoint, headers=headers).json()
-        if 'errors' in data:
-            raise APIError('Blackout')
+        playback_data = self._session.get(endpoint, headers=headers).json()
+        self._check_errors(playback_data)
 
-        return data['stream']['complete']
+        return playback_data['stream']['complete']
 
     def logout(self):
         userdata.delete('access_token')

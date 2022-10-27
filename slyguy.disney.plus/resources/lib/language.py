@@ -3,7 +3,7 @@ from slyguy.language import BaseLanguage
 class Language(BaseLanguage):
     ASK_USERNAME             = 30001
     ASK_PASSWORD             = 30002
-    LOGIN_ERROR              = 30003
+    API_ERROR                = 30003
     MOVIES                   = 30004
     SERIES                   = 30005
     ORIGINALS                = 30006
@@ -43,5 +43,7 @@ class Language(BaseLanguage):
     PROFILE_DELETED          = 30040
     INCLUDE_INTRO            = 30041
     CONTINUE_WATCHING        = 30042
+    NOT_ENTITLED             = 30043
+    BAD_CREDENTIALS          = 30044
 
 _ = Language()

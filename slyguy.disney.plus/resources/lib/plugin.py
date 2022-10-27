@@ -510,19 +510,20 @@ def play(content_id, skip_intro=None, continue_watching=0, **kwargs):
     if not ia.check() or not inputstream.require_version(ver_required):
         plugin.exception(_(_.IA_VER_ERROR, kodi_ver=KODI_VERSION, ver_required=ver_required))
 
-    video = api.videos(content_id)['videos'][0]
-    playback_url = video['mediaMetadata']['playbackUrls'][0]['href']
-    media_stream = api.media_stream(playback_url)
+    video             = api.videos(content_id)['videos'][0]
+    playback_url      = video['mediaMetadata']['playbackUrls'][0]['href']
+    media_stream      = api.media_stream(playback_url)
+    original_language = video.get('originalLanguage') or 'en'
     
     headers = api.session.headers
-    headers['_proxy_default_language'] = video['originalLanguage']
+    headers['_proxy_default_language'] = original_language
 
     item = plugin.Item(
         path = media_stream,
         inputstream = ia,
         headers = headers,
         properties = {
-            'inputstream.adaptive.original_audio_language': video['originalLanguage'],
+            'inputstream.adaptive.original_audio_language': original_language,
         },
         use_proxy = True,
     )

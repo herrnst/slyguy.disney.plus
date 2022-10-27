@@ -10,8 +10,8 @@ msgid "Password"
 msgstr ""
 
 msgctxt "#30003"
-msgid "Failed to login.\n"
-"Server Message: {msg}"
+msgid "API request failed\n"
+"Server Error: {msg}"
 msgstr ""
 
 msgctxt "#30004"
@@ -169,6 +169,16 @@ msgstr ""
 
 msgctxt "#30042"
 msgid "Continue Watching"
+msgstr ""
+
+msgctxt "#30043"
+msgid "You are not entitled to access this content.\n"
+"Check your subscription is valid."
+msgstr ""
+
+msgctxt "#30044"
+msgid "Your login details are in-correct.\n"
+"Please check them and try again."
 msgstr ""
 
 ## COMMON SETTINGS ##
