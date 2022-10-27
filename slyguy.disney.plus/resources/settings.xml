@@ -16,8 +16,9 @@
 
         <setting label="30009" type="bool" id="wv_secure" visible="system.platform.android" default="false" />
             <setting label="30019" type="bool" id="h265" visible="system.platform.android" default="true" enable="eq(-1,true)" />
-                <setting label="30018" type="bool" id="hdr10" visible="system.platform.android" default="true" enable="eq(-2,true)+eq(-1,true)+eq(1,false)"/>
-                <setting label="30015" type="bool" id="dolby_vision" visible="system.platform.android" default="false" enable="eq(-3,true)+eq(-2,true)+eq(-1,false)"/>
+                <setting label="30052" type="bool" id="dolby_atmos" visible="system.platform.android" default="false" enable="eq(-2,true)+eq(-1,true)"/>
+                <setting label="30018" type="bool" id="hdr10" visible="system.platform.android" default="true" enable="eq(-3,true)+eq(-2,true)+eq(1,false)"/>
+                <setting label="30015" type="bool" id="dolby_vision" visible="system.platform.android" default="false" enable="eq(-4,true)+eq(-3,true)+eq(-1,false)"/>
     </category>
 
     <category label="$ADDON[script.module.slyguy 32036]">

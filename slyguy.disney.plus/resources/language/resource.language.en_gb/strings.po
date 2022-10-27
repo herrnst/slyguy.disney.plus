@@ -92,7 +92,7 @@ msgid "Profile Language"
 msgstr ""
 
 msgctxt "#30023"
-msgid "Skip Intro"
+msgid "Play without Intro"
 msgstr ""
 
 msgctxt "#30024"
@@ -100,7 +100,7 @@ msgid "Skip Intros"
 msgstr ""
 
 msgctxt "#30025"
-msgid "Collections"
+msgid "Play from Start"
 msgstr ""
 
 msgctxt "#30026"
@@ -164,7 +164,7 @@ msgid "Profile Deleted"
 msgstr ""
 
 msgctxt "#30041"
-msgid "Include Intro"
+msgid "Play with Intro"
 msgstr ""
 
 msgctxt "#30042"
@@ -179,6 +179,38 @@ msgstr ""
 msgctxt "#30044"
 msgid "Your login details are in-correct.\n"
 "Please check them and try again."
+msgstr ""
+
+msgctxt "#30045"
+msgid "Select Avatar"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Random Pick"
+msgstr ""
+
+msgctxt "#30047"
+msgid "{label} (Used)"
+msgstr ""
+
+msgctxt "#30048"
+msgid "From {time:0>8}"
+msgstr ""
+
+msgctxt "#30049"
+msgid "{label} [B](Available {date})[/B]"
+msgstr ""
+
+msgctxt "#30050"
+msgid "D MMMM YYYY"
+msgstr ""
+
+msgctxt "#30051"
+msgid "Could not find stream data for this content"
+msgstr ""
+
+msgctxt "#30052"
+msgid "Dolby Atmos"
 msgstr ""
 
 ## COMMON SETTINGS ##

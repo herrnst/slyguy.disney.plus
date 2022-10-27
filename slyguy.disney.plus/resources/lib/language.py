@@ -25,7 +25,7 @@ class Language(BaseLanguage):
     LANG_KODI                = 30022
     SKIP_INTRO               = 30023
     SKIP_INTROS              = 30024
-    COLLECTIONS              = 30025
+    PLAY_FROM_START          = 30025
     WATCHLIST                = 30026
     ADD_WATCHLIST            = 30027
     DELETE_WATCHLIST         = 30028
@@ -45,5 +45,12 @@ class Language(BaseLanguage):
     CONTINUE_WATCHING        = 30042
     NOT_ENTITLED             = 30043
     BAD_CREDENTIALS          = 30044
+    SELECT_AVATAR            = 30045
+    RANDOM_AVATAR            = 30046
+    AVATAR_USED              = 30047
+    PLAY_FROM_TIME           = 30048
+    AVAILABLE                = 30049
+    AVAILABLE_FORMAT         = 30050
+    NO_VIDEO_FOUND           = 30051
 
 _ = Language()

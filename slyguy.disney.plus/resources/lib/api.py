@@ -235,6 +235,15 @@ class API(object):
         endpoint = self.get_config()['services']['content']['client']['endpoints']['searchPersisted']['href'].format(queryId='core/disneysearch')
         return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['disneysearch']
 
+    def avatar_by_id(self, ids):
+        variables = {
+            'preferredLanguage': [self._language],
+            'avatarId': ids,
+        }
+
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['searchPersisted']['href'].format(queryId='core/AvatarByAvatarId')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['AvatarByAvatarId']
+
     def video_bundle(self, family_id):
         variables = {
             'preferredLanguage': [self._language],
@@ -303,7 +312,8 @@ class API(object):
         endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/CompleteCollectionBySlug')
         return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['CompleteCollectionBySlug']
         
-    def set_by_setid(self, set_id, set_type, page=1, page_size=20):
+
+    def set_by_id(self, set_id, set_type, page=1, page_size=20):
         variables = {
             'preferredLanguage': [self._language],
             'setId': set_id,
@@ -331,7 +341,9 @@ class API(object):
             'contentIds': content_id,
         }
         endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/DeleteFromWatchlist')
-        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['DeleteFromWatchlist']
+        data = self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['DeleteFromWatchlist']
+        xbmc.sleep(500)
+        return data
 
     def videos(self, content_id):
         variables = {
@@ -350,12 +362,17 @@ class API(object):
 
         if xbmc.getCondVisibility('system.platform.android') and settings.getBool('wv_secure', False) and self.get_config()['services']['media']['extras']['isUhdAllowed']:
             scenario = self.get_config()['services']['media']['extras']['playbackScenarioDefault']
+            
             if settings.getBool('h265', False):
                 scenario += '-h265'
+
                 if settings.getBool('dolby_vision', False):
                     scenario += '-dovi'
                 elif settings.getBool('hdr10', False):
                     scenario += '-hdr10'
+
+                if settings.getBool('dolby_atmos', False):
+                    scenario += '-atmos'
 
         headers = {'accept': 'application/vnd.media-service+json; version=4', 'authorization': userdata.get('access_token')}
 
