@@ -33,7 +33,7 @@ class API(object):
         value = value.split('.')[-1]
         split = value.split('_')
 
-        if split > 1:
+        if len(split) > 1:
             split[1] = split[1].upper()
 
         self._language = '-'.join(split)
