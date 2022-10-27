@@ -107,18 +107,6 @@ msgstr "Profilsprache"
 
 ## COMMON SETTINGS ##
 
-msgctxt "#32034"
-msgid "General"
-msgstr "Allgemein"
-
-msgctxt "#32035"
-msgid "Playback"
-msgstr "Wiedergabe"
-
-msgctxt "#32061"
-msgid "Playback Quality"
-msgstr "Wiedergabequalität"
-
 msgctxt "#32055"
 msgid "Ask"
 msgstr "Nachfragen"
@@ -142,63 +130,3 @@ msgstr "Angepasst"
 msgctxt "#32073"
 msgid "Disabled"
 msgstr "Deaktiviert"
-
-msgctxt "#32059"
-msgid "Max Bandwidth (Mbit/s)"
-msgstr "Max. Bandbreite (Mbit/s)"
-
-msgctxt "#32023"
-msgid "Use Inputstream HLS for VOD Streams"
-msgstr "Benutze Inputstream HLS für VOD-Streams"
-
-msgctxt "#32021"
-msgid "Install Widevine CDM"
-msgstr "Widevine CDM installieren"
-
-msgctxt "#32036"
-msgid "Advanced"
-msgstr "Erweitert"
-
-msgctxt "#32037"
-msgid "Verify SSL Certs"
-msgstr "Überprüfe SSL-Zertifikate"
-
-msgctxt "#32044"
-msgid "HTTP Timeout (seconds)"
-msgstr "HTTP-Wartezeit (Sekunden)"
-
-msgctxt "#32045"
-msgid "HTTP Retries"
-msgstr "HTTP-Versuche"
-
-#msgctxt "#32046"
-#msgid "Chunksize"
-#msgstr ""
-
-#msgctxt "#32039"
-#msgid "Service Start Delay (0 = Random 10s-60s)"
-#msgstr ""
-
-msgctxt "#32019"
-msgid "Reset Add-on"
-msgstr "Add-on zurücksetzen"
-
-#msgctxt "#32063"
-#msgid "Live Play Action"
-#msgstr ""
-
-#msgctxt "#32066"
-#msgid "Ask"
-#msgstr "Nachfragen"
-
-#msgctxt "#32065"
-#msgid "From Live"
-#msgstr ""
-
-#msgctxt "#32064"
-#msgid "From Start"
-#msgstr ""
-
-msgctxt "#32076"
-msgid "Use Inputstream HLS for Live Streams"
-msgstr "Benutze Inputstream HLS für Livestreams"

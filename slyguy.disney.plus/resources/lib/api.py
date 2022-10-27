@@ -234,6 +234,28 @@ class API(object):
         endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/DmcVideoBundle')
         return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['DmcVideoBundle']
 
+    def continue_watching(self, family_id):
+        variables = {
+            'preferredLanguage': [self._language],
+            'familyId': family_id,
+            'lastBookmark': None,
+            'contentTransactionId': self._transaction_id(),
+        }
+
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/ContinueWatchingVideo')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['ContinueWatchingVideo']
+
+    def continue_watching_series(self, series_id):
+        variables = {
+            'preferredLanguage': [self._language],
+            'seriesId': series_id,
+            'lastBookmark': None,
+            'contentTransactionId': self._transaction_id(),
+        }
+
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/ContinueWatchingSeries')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['ContinueWatchingSeries']
+
     def series_bundle(self, series_id, page=1, page_size=12):
         variables = {
             'preferredLanguage': [self._language],
@@ -340,98 +362,3 @@ class API(object):
         mem_cache.delete('transaction_id')
         
         self.new_session()
-
-# <item>android-mobile-drm-ctr</item>
-# <item>android-mobile-drm-ctr-h265-sdr</item>
-# <item>android-mobile-drm-ctr-h265-dovi</item>
-# <item>android-mobile-drm-ctr-h265-hdr10</item>
-# <item>android-tablet-drm-ctr</item>
-# <item>android-tablet-drm-ctr-h265-sdr</item>
-# <item>android-tablet-drm-ctr-h265-dovi</item>
-# <item>android-tablet-drm-ctr-h265-hdr10</item>
-# <item>android-tablet-high-drm-ctr</item>
-# <item>android-tablet-high-drm-ctr-h265-sdr</item>
-# <item>android-tablet-high-drm-ctr-h265-dovi</item>
-# <item>android-tablet-high-drm-ctr-h265-hdr10</item>
-# <item>android-tablet-sw-drm-ctr</item>
-# <item>android-tablet-sw-drm-ctr-h265-sdr</item>
-# <item>android-tablet-lfr-drm-ctr</item>
-# <item>android-tv-drm-ctr</item>
-# <item>android-tv-drm-ctr-h265-sdr</item>
-# <item>android-tv-drm-ctr-h265-hdr10</item>
-# <item>android-tv-drm-ctr-h265-dovi</item>
-
-#  public final String generateScenario$sdk_core_api_release(MediaDescriptor mediaDescriptor, MediaServiceConfiguration mediaServiceConfiguration, boolean z) {
-#         String str;
-#         String defaultPlaybackScenario = mediaServiceConfiguration.getDefaultPlaybackScenario();
-#         String basePlaybackScenario = mediaDescriptor.getBasePlaybackScenario();
-#         AudioQuality audioQuality = null;
-#         if (basePlaybackScenario == null || !(!StringsJVM.m50800a(basePlaybackScenario))) {
-#             MediaPreferences mediaPreferences = mediaDescriptor.getMediaPreferences();
-#             MediaQuality preferredMediaQuality = mediaPreferences != null ? mediaPreferences.getPreferredMediaQuality() : null;
-#             if (preferredMediaQuality == null || !preferredMediaQuality.equals(MediaQuality.restricted)) {
-#                 if (preferredMediaQuality != null && preferredMediaQuality.equals(MediaQuality.limited)) {
-#                     defaultPlaybackScenario = defaultPlaybackScenario + '-' + MediaQuality.limited;
-#                 }
-#                 WidevineSecurityRequirements widevine = mediaServiceConfiguration.getSecurityCheckRequirements().getWidevine();
-#                 if (widevine != null && widevine.getEnabled() && mediaServiceConfiguration.isUhdAllowed()) {
-#                     MediaCapabilitiesProvider mediaCapabilitiesProvider2 = this.mediaCapabilitiesProvider;
-#                     List<HdrType> supportedHdrTypes = mediaCapabilitiesProvider2 != null ? mediaCapabilitiesProvider2.getSupportedHdrTypes() : null;
-#                     MediaCapabilitiesProvider mediaCapabilitiesProvider3 = this.mediaCapabilitiesProvider;
-#                     List<SupportedCodec> supportedCodecs = mediaCapabilitiesProvider3 != null ? mediaCapabilitiesProvider3.getSupportedCodecs() : null;
-#                     MediaCapabilitiesProvider mediaCapabilitiesProvider4 = this.mediaCapabilitiesProvider;
-#                     HdcpSecurityLevel hdcpSecurityLevel = mediaCapabilitiesProvider4 != null ? mediaCapabilitiesProvider4.getHdcpSecurityLevel() : null;
-#                     MediaCapabilitiesProvider mediaCapabilitiesProvider5 = this.mediaCapabilitiesProvider;
-#                     WidevineSecurityLevel widevineSecurityLevel = mediaCapabilitiesProvider5 != null ? mediaCapabilitiesProvider5.getWidevineSecurityLevel() : null;
-#                     WidevineSecurityRequirements widevine2 = mediaServiceConfiguration.getSecurityCheckRequirements().getWidevine();
-#                     WidevineSecurityLevel minimumSecurityLevel = widevine2 != null ? widevine2.getMinimumSecurityLevel() : null;
-#                     WidevineSecurityLevel widevineSecurityLevel2 = WidevineSecurityLevel.level1;
-#                     boolean z2 = false;
-#                     boolean z3 = minimumSecurityLevel == widevineSecurityLevel2 && widevineSecurityLevel == widevineSecurityLevel2 && z;
-#                     if (minimumSecurityLevel != WidevineSecurityLevel.level1) {
-#                         z2 = true;
-#                     }
-#                     if (z3 || z2 || C11223i.m50908a((Object) mediaDescriptor.getDrmType(), (Object) DrmType.PLAYREADY)) {
-#                         if (supportedCodecs == null || !supportedCodecs.contains(SupportedCodec.h265)) {
-#                             str = defaultPlaybackScenario;
-#                         } else {
-#                             str = defaultPlaybackScenario + "-h265";
-#                             if (hdcpSecurityLevel == HdcpSecurityLevel.enhanced || hdcpSecurityLevel == HdcpSecurityLevel.unknown) {
-#                                 if (mediaDescriptor.getHdrType() != null) {
-#                                     str = str + '-' + mediaDescriptor.getHdrType();
-#                                 } else if (supportedHdrTypes != null && supportedHdrTypes.contains(HdrType.DOLBY_VISION)) {
-#                                     str = str + "-dovi";
-#                                 } else if (supportedHdrTypes != null && supportedHdrTypes.contains(HdrType.HDR10)) {
-#                                     str = str + "-hdr10";
-#                                 }
-#                             }
-#                         }
-#                         MediaCapabilitiesProvider mediaCapabilitiesProvider6 = this.mediaCapabilitiesProvider;
-#                         if (mediaCapabilitiesProvider6 != null && mediaCapabilitiesProvider6.supportsAtmos()) {
-#                             MediaPreferences mediaPreferences2 = mediaDescriptor.getMediaPreferences();
-#                             if (mediaPreferences2 != null) {
-#                                 audioQuality = mediaPreferences2.getPreferredAudioQuality();
-#                             }
-#                             if (audioQuality == AudioQuality.atmos) {
-#                                 str = str + "-atmos";
-#                             }
-#                         }
-#                     } else if (!C11223i.m50908a((Object) mediaDescriptor.getDrmType(), (Object) DrmType.PLAYREADY)) {
-#                         str = mediaServiceConfiguration.getRestrictedPlaybackScenario();
-#                     }
-#                 }
-#                 str = defaultPlaybackScenario;
-#             } else {
-#                 str = mediaServiceConfiguration.getRestrictedPlaybackScenario();
-#             }
-#         } else {
-#             str = mediaDescriptor.getBasePlaybackScenario();
-#             if (str == null) {
-#                 C11223i.m50904a();
-#                 throw null;
-#             }
-#         }
-#         if (C11223i.m50908a((Object) mediaDescriptor.getAdInsertionStrategy(), (Object) AdInsertionStrategy.NONE)) {
-#             return str;
-#         }
-#         return str + '~' + mediaDescriptor.getAdInsertionStrategy();

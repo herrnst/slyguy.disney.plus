@@ -332,9 +332,11 @@ def _parse_video(row):
 
     if _get_milestone(row.get('milestones'), 'intro_end'):
         if settings.getBool('skip_intros', False):
-            item.context.append((_.INCLUDE_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=0))))
+            item.context.append((_.INCLUDE_INTRO, 'XBMC.PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=0))))
         else:
-            item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
+            item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
+
+    item.context.append((_.CONTINUE_WATCHING, 'XBMC.PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], continue_watching=1))))
 
     if row['programType'] == 'episode':
         item.info.update({
@@ -493,7 +495,7 @@ def search(query=None, page=1, **kwargs):
 
 @plugin.route()
 @plugin.login_required()
-def play(content_id, skip_intro=None, **kwargs):
+def play(content_id, skip_intro=None, continue_watching=0, **kwargs):
     if KODI_VERSION > 18:
         ver_required = '2.5.5'
     else:
@@ -525,11 +527,24 @@ def play(content_id, skip_intro=None, **kwargs):
         use_proxy = True,
     )
 
-    skip_intro = int(skip_intro) if skip_intro is not None else settings.getBool('skip_intros', False)
-    if skip_intro:
-        start_from = _get_milestone(video.get('milestones'), 'intro_end', default=0) / 1000
-        item.properties['ResumeTime'] = start_from
-        item.properties['TotalTime']  = start_from
+    resume_from = None
+    if int(continue_watching):
+        if video['programType'] == 'episode':
+            data = api.continue_watching_series(video['encodedSeriesId'])
+            for row in data['episodesWithProgress']:
+                if row['contentId'] == video['contentId']:
+                    resume_from = row['userMeta']['playhead']
+        else:
+            data = api.continue_watching(video['family']['encodedFamilyId'])
+            if data.get('resume'):
+                resume_from = data['resume']['userMeta']['playhead']
+
+    if not resume_from and (int(skip_intro) if skip_intro is not None else settings.getBool('skip_intros', False)):
+        resume_from = _get_milestone(video.get('milestones'), 'intro_end', default=0) / 1000
+
+    if resume_from:
+        item.properties['ResumeTime'] = resume_from
+        item.properties['TotalTime']  = resume_from
 
     if settings.getBool('wv_secure', False):
         item.properties['inputstream.adaptive.license_flags'] = 'force_secure_decoder'
