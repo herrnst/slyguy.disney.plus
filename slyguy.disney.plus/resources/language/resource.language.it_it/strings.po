@@ -78,8 +78,8 @@ msgid "HDR10"
 msgstr "HDR10"
 
 msgctxt "#30019"
-msgid "H265"
-msgstr "H265"
+msgid "H.265"
+msgstr "H.265"
 
 msgctxt "#30020"
 msgid "App Language"
@@ -107,7 +107,7 @@ msgstr "Avvia dall'inizio"
 
 msgctxt "#30026"
 msgid "Watchlist"
-msgstr "Visti"
+msgstr "La tua lista"
 
 msgctxt "#30027"
 msgid "Aggiungi ai visti"
@@ -206,8 +206,8 @@ msgid "{label} [B](Available {date})[/B]"
 msgstr "{label} [B](Available {date})[/B]"
 
 msgctxt "#30050"
-msgid "D MMMM YYYY"
-msgstr "G MMMM AAAA"
+msgid "D/MM/YYYY"
+msgstr D/MM/YYYY"
 
 msgctxt "#30051"
 msgid "Could not find stream data for this content"

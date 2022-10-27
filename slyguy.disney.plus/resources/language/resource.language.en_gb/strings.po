@@ -76,7 +76,7 @@ msgid "HDR10"
 msgstr ""
 
 msgctxt "#30019"
-msgid "H265"
+msgid "H.265"
 msgstr ""
 
 msgctxt "#30020"
@@ -202,7 +202,7 @@ msgid "{label} [B](Available {date})[/B]"
 msgstr ""
 
 msgctxt "#30050"
-msgid "D MMMM YYYY"
+msgid "D/MM/YYYY"
 msgstr ""
 
 msgctxt "#30051"

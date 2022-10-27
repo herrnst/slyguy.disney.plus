@@ -90,7 +90,7 @@ msgid "HDR10"
 msgstr "HDR10"
 
 msgctxt "#30019"
-msgid "H265"
+msgid "H.265"
 msgstr "H.265"
 
 msgctxt "#30020"
