@@ -330,8 +330,11 @@ def _parse_video(row):
         playable = True,
     )
 
-    if _get_milestone(row.get('milestones'), 'intro_end') and not settings.getBool('skip_intros', False):
-        item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
+    if _get_milestone(row.get('milestones'), 'intro_end'):
+        if settings.getBool('skip_intros', False):
+            item.context.append((_.INCLUDE_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=0))))
+        else:
+            item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
 
     if row['programType'] == 'episode':
         item.info.update({
@@ -490,7 +493,7 @@ def search(query=None, page=1, **kwargs):
 
 @plugin.route()
 @plugin.login_required()
-def play(content_id, skip_intro=0, **kwargs):
+def play(content_id, skip_intro=None, **kwargs):
     if KODI_VERSION > 18:
         ver_required = '2.5.5'
     else:
@@ -522,7 +525,8 @@ def play(content_id, skip_intro=0, **kwargs):
         use_proxy = True,
     )
 
-    if int(skip_intro) or settings.getBool('skip_intros', False):
+    skip_intro = int(skip_intro) if skip_intro is not None else settings.getBool('skip_intros', False)
+    if skip_intro:
         start_from = _get_milestone(video.get('milestones'), 'intro_end', default=0) / 1000
         item.properties['ResumeTime'] = start_from
         item.properties['TotalTime']  = start_from

@@ -41,5 +41,6 @@ class Language(BaseLanguage):
     PROFILE_NAME             = 30038
     PROFILE_NAME_TAKEN       = 30039
     PROFILE_DELETED          = 30040
+    INCLUDE_INTRO            = 30041
 
 _ = Language()

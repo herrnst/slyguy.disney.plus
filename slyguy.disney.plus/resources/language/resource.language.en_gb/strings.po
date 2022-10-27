@@ -163,6 +163,10 @@ msgctxt "#30040"
 msgid "Profile Deleted"
 msgstr ""
 
+msgctxt "#30041"
+msgid "Include Intro"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"
