@@ -103,6 +103,66 @@ msgctxt "#30025"
 msgid "Collections"
 msgstr ""
 
+msgctxt "#30026"
+msgid "Watchlist"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Add to Watchlist"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Remove from Watchlist"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Added to Watchlist"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Add a Profile"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Delete a Profile"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Delete {name}'s profile?"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Profile history, watchlist, and activity will be deleted. There is no way to undo this."
+msgstr ""
+
+msgctxt "#30034"
+msgid "Select profile to delete"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Kids Profile?"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Kid friendly interface with only content suitable for kids."
+msgstr ""
+
+msgctxt "#30037"
+msgid "Profile Activated"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Profile Name"
+msgstr ""
+
+msgctxt "#30039"
+msgid "{name} is already being used"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Profile Deleted"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"

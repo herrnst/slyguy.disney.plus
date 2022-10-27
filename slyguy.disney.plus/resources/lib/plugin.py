@@ -1,3 +1,5 @@
+import random
+
 from kodi_six import xbmcplugin
 
 from slyguy import plugin, gui, userdata, signals, inputstream, settings
@@ -27,11 +29,12 @@ def index(**kwargs):
         folder.add_item(label=_(_.MOVIES, _bold=True),  path=plugin.url_for(collection, slug='movies', content_class='contentType'))
         folder.add_item(label=_(_.SERIES, _bold=True),  path=plugin.url_for(collection, slug='series', content_class='contentType'))
         folder.add_item(label=_(_.ORIGINALS, _bold=True),  path=plugin.url_for(collection, slug='originals', content_class='originals'))
-      #  folder.add_item(label=_(_.COLLECTIONS, _bold=True),  path=plugin.url_for(collection, slug='explore', content_class='explore'))
+       # folder.add_item(label=_(_.COLLECTIONS, _bold=True),  path=plugin.url_for(collection, slug='explore', content_class='explore'))
+        folder.add_item(label=_(_.WATCHLIST, _bold=True),  path=plugin.url_for(collection, slug='watchlist', content_class='watchlist'))
         folder.add_item(label=_(_.SEARCH, _bold=True),  path=plugin.url_for(search))
 
         if not userdata.get('kid_lockdown', False):
-            folder.add_item(label=_.SELECT_PROFILE, path=plugin.url_for(select_profile))
+            folder.add_item(label=_.SELECT_PROFILE, path=plugin.url_for(select_profile), art={'thumb': userdata.get('avatar')}, info={'plot': userdata.get('profile')})
 
         folder.add_item(label=_.LOGOUT, path=plugin.url_for(logout))
     
@@ -63,26 +66,114 @@ def select_profile(**kwargs):
     _select_profile()
     gui.refresh()
 
+def _avatars():
+    avatars = {}
+
+    data = api.collection_by_slug(slug='avatars', content_class='avatars')
+    for row in data['containers']:
+        for item in row['set'].get('items', []):
+            avatars[item['avatarId']] = item['images'][0]['url']
+
+    return avatars
+
 def _select_profile():
-    active   = api.active_profile()
     profiles = api.profiles()
+    active   = api.active_profile()
+    avatars  = _avatars()
 
     options = []
-    default = None
+    values  = []
+    used_avatars = []
+    can_delete = []
+    default = -1
+    
     for index, profile in enumerate(profiles):
         options.append(profile['profileName'])
+        values.append(profile)
+        used_avatars.append(profile['attributes']['avatar']['id'])
 
-        if profile['profileId'] == active['profileId']:
+        profile['_avatar'] = avatars.get(profile['attributes']['avatar']['id'])
+
+        if profile['profileId'] == active.get('profileId'):
             default = index
 
-    index = gui.select(_.SELECT_PROFILE, options=options, preselect=default, useDetails=False)
+            userdata.set('avatar', profile['_avatar'])
+            userdata.set('profile', profile['profileName'])
+
+        if not profile['attributes']['isDefault']:
+            can_delete.append(profile)
+
+    options.append(_(_.ADD_PROFILE, _bold=True))
+    values.append('_add')
+
+    if can_delete:
+        options.append(_(_.DELETE_PROFILE, _bold=True))
+        values.append('_delete')
+
+    index = gui.select(_.SELECT_PROFILE, options=options, preselect=default)
+
     if index < 0:
         return
 
-    api.set_profile(profiles[index])
+    selected = values[index]
 
-    if settings.getBool('kid_lockdown', False) and profiles[index]['attributes']['kidsModeEnabled']:
+    if selected == '_delete':
+        _delete_profile(can_delete)
+        return _select_profile()
+
+    elif selected == '_add':
+        selected = _add_profile([x['profileName'] for x in profiles], avatars=[x for x in avatars.keys() if x not in used_avatars])
+
+        if not selected:
+            return _select_profile()
+
+        selected['_avatar'] = avatars.get(selected['attributes']['avatar']['id'])
+
+    _set_profile(selected)
+
+def _set_profile(profile):
+    api.set_profile(profile)
+
+    if settings.getBool('kid_lockdown', False) and profile['attributes']['kidsModeEnabled']:
         userdata.set('kid_lockdown', True)
+
+    userdata.set('avatar', profile['_avatar'])
+    userdata.set('profile', profile['profileName'])
+    gui.notification(_.PROFILE_ACTIVATED, heading=profile['profileName'], icon=profile['_avatar'])
+
+def _delete_profile(profiles):
+    options = []
+    for index, profile in enumerate(profiles):
+        options.append(profile['profileName'])
+
+    index = gui.select(_.SELECT_DELETE_PROFILE, options=options)
+    if index < 0:
+        return
+
+    selected = profiles[index]
+    if gui.yes_no(_.DELETE_PROFILE_INFO, heading=_(_.DELTE_PROFILE_HEADER, name=selected['profileName'])) and api.delete_profile(selected).ok:
+        gui.notification(_.PROFILE_DELETED, heading=profile['profileName'], icon=profile['_avatar'])
+
+def _add_profile(taken_names, avatars):
+    name = ''
+    while True:
+        name = gui.input(_.PROFILE_NAME, default=name).strip()
+        if not name:
+            return
+
+        elif name in taken_names:
+            gui.notification(_(_.PROFILE_NAME_TAKEN, name=name))
+            
+        else:
+            break
+
+    kids = gui.yes_no(_.KIDS_PROFILE_INFO, heading=_.KIDS_PROFILE)
+
+    profile = api.add_profile(name, kids=kids, avatar=random.choice(avatars) if avatars else None)
+    if 'errors' in profile:
+        gui.ok(profile['errors'][0].get('description'))
+
+    return profile
 
 @plugin.route()
 def collection(slug, content_class, label=None, **kwargs):
@@ -103,7 +194,7 @@ def collection(slug, content_class, label=None, **kwargs):
         if not set_id:
             return None
 
-        if _set['contentClass'] in ('hero', 'brand', 'episode'):
+        if _set['contentClass'] in ('hero', 'brand', 'episode', 'WatchlistSet'):
             items = _process_rows(_set['items'], _set['contentClass'])
             folder.add_items(items)
             continue
@@ -165,10 +256,27 @@ def _process_rows(rows, content_class=None):
         elif content_type == 'StandardCollection':
             item = _parse_collection(row)
 
-        if item:
-            items.append(item)
+        if not item:
+            continue
+
+        if content_class == 'WatchlistSet':
+            item.context.insert(0, (_.DELETE_WATCHLIST, 'XBMC.RunPlugin({})'.format(plugin.url_for(delete_watchlist, content_id=row['contentId']))))
+        elif content_type == 'DmcSeries' or (content_type == 'DmcVideo' and program_type != 'episode'):
+            item.context.insert(0, (_.ADD_WATCHLIST, 'XBMC.RunPlugin({})'.format(plugin.url_for(add_watchlist, content_id=row['contentId'], title=item.label))))
+
+        items.append(item)
 
     return items
+
+@plugin.route()
+def add_watchlist(content_id, title=None, **kwargs):
+    gui.notification(_.ADDED_WATCHLIST, heading=title)
+    api.add_watchlist(content_id)
+
+@plugin.route()
+def delete_watchlist(content_id, **kwargs):
+    api.delete_watchlist(content_id)
+    gui.refresh()
 
 def _parse_collection(row):
     return plugin.Item(
@@ -431,6 +539,8 @@ def logout(**kwargs):
 
     api.logout()
     userdata.delete('kid_lockdown')
+    userdata.delete('avatar')
+    userdata.delete('profile')
     gui.refresh()
 
 def _get_milestone(milestones, key, default=None):

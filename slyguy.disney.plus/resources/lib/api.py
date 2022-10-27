@@ -111,7 +111,7 @@ class API(object):
         payload = {
             'deviceFamily': 'android',
             'applicationRuntime': 'android',
-            'deviceProfile': 'phone',
+            'deviceProfile': 'tv',
             'attributes': {},
         }
     
@@ -157,6 +157,36 @@ class API(object):
 
         endpoint = self.get_config()['services']['account']['client']['endpoints']['getUserProfiles']['href']
         return self._session.get(endpoint).json()
+
+    def add_profile(self, name, kids=False, avatar=None):
+        payload = {
+            'attributes': {
+                'kidsModeEnabled': bool(kids),
+                'languagePreferences': {
+                    'appLanguage': self._language,
+                    'playbackLanguage': self._language,
+                    'subtitleLanguage': self._language,
+                },
+                'playbackSettings': {
+                    'autoplay': True,
+                },
+            },
+            'metadata': None,
+            'profileName': name,
+        }
+
+        if avatar:
+            payload['attributes']['avatar'] = {
+                'id': avatar,
+                'userSelected': False,
+            }
+
+        endpoint = self.get_config()['services']['account']['client']['endpoints']['createUserProfile']['href']
+        return self._session.post(endpoint, json=payload).json()
+
+    def delete_profile(self, profile):
+        endpoint = self.get_config()['services']['account']['client']['endpoints']['deleteUserProfile']['href'].format(profileId=profile['profileId'])
+        return self._session.delete(endpoint)
 
     def active_profile(self):
         self._refresh_token()
@@ -236,9 +266,10 @@ class API(object):
             'contentTransactionId': self._transaction_id(),
         }
 
-        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='disney/CollectionBySlug')
-        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['CollectionBySlug']
-
+        #endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='disney/CollectionBySlug')
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/CompleteCollectionBySlug')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['CompleteCollectionBySlug']
+        
     def set_by_setid(self, set_id, set_type, page=1, page_size=20):
         variables = {
             'preferredLanguage': [self._language],
@@ -249,8 +280,25 @@ class API(object):
             'contentTransactionId': self._transaction_id(),
         }
 
-        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='disney/SetBySetId')
+        #endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='disney/SetBySetId')
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/SetBySetId')
         return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['SetBySetId']
+
+    def add_watchlist(self, content_id):
+        variables = {
+            'preferredLanguage': [self._language],
+            'contentIds': content_id,
+        }
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/AddToWatchlist')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['AddToWatchlist']
+
+    def delete_watchlist(self, content_id):
+        variables = {
+            'preferredLanguage': [self._language],
+            'contentIds': content_id,
+        }
+        endpoint = self.get_config()['services']['content']['client']['endpoints']['dmcVideos']['href'].format(queryId='core/DeleteFromWatchlist')
+        return self._session.get(endpoint, params={'variables': json.dumps(variables)}).json()['data']['DeleteFromWatchlist']
 
     def videos(self, content_id):
         variables = {
