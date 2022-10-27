@@ -23,5 +23,8 @@ class Language(BaseLanguage):
     APP_LANGUAGE         = 30020
     LANG_PROFILE         = 30021
     LANG_KODI            = 30022
+    SKIP_INTRO           = 30023
+    SKIP_INTROS          = 30024
+    COLLECTIONS          = 30025
     
 _ = Language()

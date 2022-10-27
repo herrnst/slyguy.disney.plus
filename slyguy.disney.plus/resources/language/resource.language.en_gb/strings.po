@@ -91,6 +91,18 @@ msgctxt "#30022"
 msgid "Profile Language"
 msgstr ""
 
+msgctxt "#30023"
+msgid "Skip Intro"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Skip Intros"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Collections"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"

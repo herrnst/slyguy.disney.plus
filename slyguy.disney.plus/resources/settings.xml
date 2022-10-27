@@ -2,6 +2,7 @@
 <settings>    
     <category label="32034">
         <setting label="30020" id="app_language" type="enum" default="0" lvalues="30021|30022"/>
+        <setting label="30024" type="bool" id="skip_intros" default="false"/>
         <setting label="30017" type="bool" id="kid_lockdown" default="false"/>
     </category>
 

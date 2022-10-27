@@ -27,6 +27,7 @@ def index(**kwargs):
         folder.add_item(label=_(_.MOVIES, _bold=True),  path=plugin.url_for(collection, slug='movies', content_class='contentType'))
         folder.add_item(label=_(_.SERIES, _bold=True),  path=plugin.url_for(collection, slug='series', content_class='contentType'))
         folder.add_item(label=_(_.ORIGINALS, _bold=True),  path=plugin.url_for(collection, slug='originals', content_class='originals'))
+      #  folder.add_item(label=_(_.COLLECTIONS, _bold=True),  path=plugin.url_for(collection, slug='explore', content_class='explore'))
         folder.add_item(label=_(_.SEARCH, _bold=True),  path=plugin.url_for(search))
 
         if not userdata.get('kid_lockdown', False):
@@ -69,10 +70,6 @@ def _select_profile():
     options = []
     default = None
     for index, profile in enumerate(profiles):
-        # item = plugin.Item(
-        #     label = profile['profileName'],
-        # )
-     #   options.append(item.get_li())
         options.append(profile['profileName'])
 
         if profile['profileId'] == active['profileId']:
@@ -105,8 +102,8 @@ def collection(slug, content_class, label=None, **kwargs):
 
         if not set_id:
             return None
-        
-        if _set['contentClass'] in ('hero', 'brand'):
+
+        if _set['contentClass'] in ('hero', 'brand', 'episode'):
             items = _process_rows(_set['items'], _set['contentClass'])
             folder.add_items(items)
             continue
@@ -155,8 +152,8 @@ def _process_rows(rows, content_class=None):
             program_type = row.get('programType')
 
             if program_type == 'episode':
-                if content_class == 'ContinueWatchingSet':
-                    item = _parse_episode(row)
+                if content_class in ('episode', 'ContinueWatchingSet'):
+                    item = _parse_video(row)
                 else:
                     item = _parse_series(row)
             else:
@@ -207,38 +204,37 @@ def _parse_season(row, series):
         path  = plugin.url_for(season, season_id=row['seasonId'], title=title),
     )
 
-def _parse_episode(row):
-    item = _parse_video(row)
-    
-    item.context = []
-    item.info.update({
-        'mediatype' : 'episode',
-        'season': row['seasonSequenceNumber'],
-        'episode': row['episodeSequenceNumber'],
-        'tvshowtitle': _get_text(row['texts'], 'title', 'series'),
-    })
-
-    return item
-
 def _parse_video(row):
-    return plugin.Item(
+    item = plugin.Item(
         label = _get_text(row['texts'], 'title', 'program'),
-        info = {
+        info  = {
             'plot': _get_text(row['texts'], 'description', 'program'),
             'duration': row['mediaMetadata']['runtimeMillis']/1000, 
             'year': row['releases'][0]['releaseYear'],
             'dateadded': row['releases'][0]['releaseDate'] or row['releases'][0]['releaseYear'],
             'mediatype': 'movie',
             'genre': row['genres'],
+            'season': row['seasonSequenceNumber'],
+            'episode': row['episodeSequenceNumber'],
         },
-        art = {'thumb': _image(row['images'], 'thumb'), 'fanart': _image(row['images'], 'fanart')},
-        context = [
-            (_.EXTRAS, "Container.Update({})".format(plugin.url_for(extras, family_id=row['encodedParentOf']))),
-            (_.SUGGESTED, "Container.Update({})".format(plugin.url_for(suggested, family_id=row['encodedParentOf']))),
-        ],
-        path= plugin.url_for(play, content_id=row['contentId']),
+        art  = {'thumb': _image(row['images'], 'thumb'), 'fanart': _image(row['images'], 'fanart')},
+        path = plugin.url_for(play, content_id=row['contentId']),
         playable = True,
     )
+
+    if _get_milestone(row.get('milestones'), 'intro_end'):
+        item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
+
+    if row['programType'] == 'episode':
+        item.info.update({
+            'mediatype' : 'episode',
+            'tvshowtitle': _get_text(row['texts'], 'title', 'series'),
+        })
+    else:
+        item.context.append((_.EXTRAS, "Container.Update({})".format(plugin.url_for(extras, family_id=row['encodedParentOf']))))
+        item.context.append((_.SUGGESTED, "Container.Update({})".format(plugin.url_for(suggested, family_id=row['encodedParentOf']))))
+
+    return item
 
 def _image(data, _type='thumb'):
     _types = {
@@ -386,7 +382,7 @@ def search(query=None, page=1, **kwargs):
 
 @plugin.route()
 @plugin.login_required()
-def play(content_id, **kwargs):
+def play(content_id, skip_intro=0, **kwargs):
     if KODI_VERSION > 18:
         ver_required = '2.5.5'
     else:
@@ -418,9 +414,14 @@ def play(content_id, **kwargs):
         use_proxy = True,
     )
 
+    if int(skip_intro) or settings.getBool('skip_intros', False):
+        start_from = _get_milestone(video.get('milestones'), 'intro_end', default=0) / 1000
+        item.properties['ResumeTime'] = start_from
+        item.properties['TotalTime']  = start_from
+
     if settings.getBool('wv_secure', False):
         item.properties['inputstream.adaptive.license_flags'] = 'force_secure_decoder'
-    
+
     return item
 
 @plugin.route()
@@ -431,3 +432,13 @@ def logout(**kwargs):
     api.logout()
     userdata.delete('kid_lockdown')
     gui.refresh()
+
+def _get_milestone(milestones, key, default=None):
+    if not milestones:
+        return default
+
+    for milestone in milestones:
+        if milestone['milestoneType'] == key:
+            return milestone['milestoneTime'][0]['startMillis']
+
+    return default
