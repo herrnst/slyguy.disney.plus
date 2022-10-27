@@ -1,0 +1,371 @@
+from kodi_six import xbmcplugin
+
+from slyguy import plugin, gui, userdata, signals, inputstream, settings
+from slyguy.log import log
+from slyguy.exceptions import PluginError
+
+from .api import API
+from .language import _
+from .constants import LICENSE_URL, PAGE_SIZE
+
+api = API()
+
+@signals.on(signals.BEFORE_DISPATCH)
+def before_dispatch():
+    api.new_session()
+    plugin.logged_in = api.logged_in
+
+@plugin.route('')
+def index(**kwargs):
+    folder = plugin.Folder()
+
+    if not api.logged_in:
+        folder.add_item(label=_(_.LOGIN, _bold=True),  path=plugin.url_for(login))
+    else:
+        folder.add_item(label=_(_.FEATURED, _bold=True), path=plugin.url_for(collection, slug='home', content_class='home', label=_.FEATURED))
+        folder.add_item(label=_(_.MOVIES, _bold=True),  path=plugin.url_for(collection, slug='movies', content_class='contentType'))
+        folder.add_item(label=_(_.SERIES, _bold=True),  path=plugin.url_for(collection, slug='series', content_class='contentType'))
+        folder.add_item(label=_(_.ORIGINALS, _bold=True),  path=plugin.url_for(collection, slug='originals', content_class='originals'))
+        folder.add_item(label=_(_.SEARCH, _bold=True),  path=plugin.url_for(search))
+
+        folder.add_item(label=_.LOGOUT, path=plugin.url_for(logout))
+
+    folder.add_item(label=_.SETTINGS, path=plugin.url_for(plugin.ROUTE_SETTINGS))
+
+    return folder
+
+@plugin.route()
+def login(**kwargs):
+    username = gui.input(_.ASK_USERNAME, default=userdata.get('username', '')).strip()
+    if not username:
+        return
+
+    userdata.set('username', username)
+
+    password = gui.input(_.ASK_PASSWORD, hide_input=True).strip()
+    if not password:
+        return
+
+    api.login(username, password)
+    gui.refresh()
+
+@plugin.route()
+def collection(slug, content_class, label=None, **kwargs):
+    data = api.collection_by_slug(slug, content_class)
+    
+    folder = plugin.Folder(label or _get_text(data['texts'], 'title', 'collection'), fanart=_image(data.get('images', []), 'fanart'))
+    thumb  = _image(data.get('images', []), 'thumb')
+
+    for row in data['containers']:
+        _type = row.get('type')
+        _set  = row.get('set')
+
+        if _set.get('refIdType') == 'setId':
+            set_id = _set['refId']
+        else:
+            set_id = _set.get('setId')
+
+        if not set_id:
+            return None
+        
+        if _set['contentClass'] in ('hero', 'brand'):
+            items = _process_rows(_set['items'], _set['contentClass'])
+            folder.add_items(items)
+            continue
+
+        elif _set['contentClass'] == 'BecauseYouSet':
+            data = api.set_by_setid(set_id, _set['contentClass'], page_size=0)
+            title = _get_text(data['texts'], 'title', 'set')
+
+        else:
+            title = _get_text(_set['texts'], 'title', 'set')
+
+        folder.add_item(
+            label = title,
+            art   = {'thumb': thumb},
+            path  = plugin.url_for(sets, set_id=set_id, set_type=_set['contentClass']),
+        )
+
+    return folder
+
+@plugin.route()
+def sets(set_id, set_type, page=1, **kwargs):
+    page = int(page)
+    data = api.set_by_setid(set_id, set_type, page=page, page_size=PAGE_SIZE)
+
+    folder = plugin.Folder(_get_text(data['texts'], 'title', 'set'), sort_methods=[xbmcplugin.SORT_METHOD_UNSORTED, xbmcplugin.SORT_METHOD_VIDEO_YEAR, xbmcplugin.SORT_METHOD_LABEL])
+
+    items = _process_rows(data['items'], data['contentClass'])
+    folder.add_items(items)
+
+    if (data['meta']['page_size'] + data['meta']['offset']) < data['meta']['hits']:
+        folder.add_item(
+            label = _(_.NEXT_PAGE, page=page+1),
+            path  = plugin.url_for(sets, set_id=set_id, set_type=set_type, page=page+1),
+        )
+
+    return folder
+
+def _process_rows(rows, content_class=None):
+    items = []
+
+    for row in rows:
+        item = None
+        content_type = row.get('type')
+
+        if content_type == 'DmcVideo':
+            program_type = row.get('programType')
+
+            if program_type == 'episode':
+                if content_class == 'ContinueWatchingSet':
+                    item = _parse_episode(row)
+                else:
+                    item = _parse_series(row)
+            else:
+                item = _parse_video(row)
+
+        elif content_type == 'DmcSeries':
+            item = _parse_series(row)
+
+        elif content_type == 'StandardCollection':
+            item = _parse_collection(row)
+
+        if item:
+            items.append(item)
+
+    return items
+
+def _parse_collection(row):
+    return plugin.Item(
+        label = _get_text(row['texts'], 'title', 'collection'),
+        info  = {'plot': _get_text(row['texts'], 'description', 'collection')},
+        art   = {'thumb': _image(row['images'], 'thumb'), 'fanart': _image(row['images'], 'fanart')},
+        path  = plugin.url_for(collection, slug=row['collectionGroup']['slugs'][0]['value'], content_class=row['collectionGroup']['contentClass']),
+    )
+            
+def _parse_series(row):
+    return plugin.Item(
+        label = _get_text(row['texts'], 'title', 'series'),
+        art = {'thumb': _image(row['images'], 'thumb'), 'fanart': _image(row['images'], 'fanart')},
+        info = {
+            'plot': _get_text(row['texts'], 'description', 'series'),
+            'year': row['releases'][0]['releaseYear'],
+          #  'mediatype': 'tvshow',
+            'genre': row['genres'],
+        },
+        path = plugin.url_for(series, series_id=row['encodedSeriesId']),
+    )
+
+def _parse_season(row, series):
+    title = _(_.SEASON, season=row['seasonSequenceNumber'])
+    
+    return plugin.Item(
+        label = title,
+        info  = {
+            'plot': _get_text(row['texts'], 'description', 'season'), 
+           # 'mediatype' : 'season'
+        },
+        art   = {'thumb': _image(row['images'] or series['images'], 'thumb')},
+        path  = plugin.url_for(season, season_id=row['seasonId'], title=title),
+    )
+
+def _parse_episode(row):
+    item = _parse_video(row)
+    
+    item.context = []
+    item.info.update({
+        'mediatype' : 'episode',
+        'season': row['seasonSequenceNumber'],
+        'episode': row['episodeSequenceNumber'],
+        'tvshowtitle': _get_text(row['texts'], 'title', 'series'),
+    })
+
+    return item
+
+def _parse_video(row):
+    return plugin.Item(
+        label = _get_text(row['texts'], 'title', 'program'),
+        info = {
+            'plot': _get_text(row['texts'], 'description', 'program'),
+            'duration': row['mediaMetadata']['runtimeMillis']/1000, 
+            'year': row['releases'][0]['releaseYear'],
+            'dateadded': row['releases'][0]['releaseDate'] or row['releases'][0]['releaseYear'],
+            'mediatype': 'movie',
+            'genre': row['genres'],
+        },
+        art = {'thumb': _image(row['images'], 'thumb'), 'fanart': _image(row['images'], 'fanart')},
+        context = [
+            (_.EXTRAS, "Container.Update({})".format(plugin.url_for(extras, family_id=row['encodedParentOf']))),
+            (_.SUGGESTED, "Container.Update({})".format(plugin.url_for(suggested, family_id=row['encodedParentOf']))),
+        ],
+        path= plugin.url_for(play, media_id=row['mediaMetadata']['mediaId']),
+        playable = True,
+    )
+
+def _image(data, _type='thumb'):
+    _types = {
+        'thumb': (('thumbnail','1.78'), ('tile','1.78')),
+        'fanart': (('background','1.78'), ('background_details','1.78'), ('hero_collection','1.78')),
+    }
+
+    selected = _types[_type]
+
+    images = []
+    for row in data:
+        for index, _type in enumerate(selected):
+            if not row['url']:
+                continue
+
+            if row['purpose'] == _type[0] and str(row['aspectRatio']) == _type[1]:
+                images.append([index, row])
+
+    if not images:
+        return None
+
+    chosen = sorted(images, key=lambda x: (x[0], -x[1]['masterWidth']))[0][1]
+
+    if _type == 'fanart':
+        return chosen['url'] + '/scale?aspectRatio=1.78&format=jpeg'
+    else:
+        return chosen['url'] + '/scale?width=800&aspectRatio=1.78&format=jpeg'
+
+def _get_text(texts, field, source):
+    _types = ['medium', 'brief', 'full']
+
+    candidates = []
+    for row in texts:
+        if row['field'] == field and source == row['sourceEntity']:
+            if not row['content']:
+                continue
+
+            if row['type'] not in _types:
+                _types.append(row['type'])
+
+            candidates.append((_types.index(row['type']), row['content']))
+
+    if not candidates:
+        return None
+
+    return sorted(candidates, key=lambda x: x[0])[0][1]
+
+@plugin.route()
+def series(series_id, **kwargs):
+    data = api.series_bundle(series_id, page_size=0)
+
+    title = _get_text(data['series']['texts'], 'title', 'series')
+    folder = plugin.Folder(title, fanart=_image(data['series']['images'], 'fanart'))
+
+    for row in data['seasons']['seasons']:
+        item = _parse_season(row, data['series'])
+        folder.add_items(item)
+
+    if data['extras']['videos']:
+        folder.add_item(
+            label = (_.EXTRAS),
+            art   = {'thumb': _image(data['series']['images'], 'thumb')},
+            path  = plugin.url_for(extras, series_id=series_id),
+        )
+
+    if data['related']['items']:
+        folder.add_item(
+            label = _.SUGGESTED,
+            art   = {'thumb': _image(data['series']['images'], 'thumb')},
+            path  = plugin.url_for(suggested, series_id=series_id),
+        )
+
+    return folder
+
+@plugin.route()
+def season(season_id, title, **kwargs):
+    data = api.episodes([season_id,], page_size=PAGE_SIZE)
+    
+    folder = plugin.Folder(title, sort_methods=[xbmcplugin.SORT_METHOD_EPISODE, xbmcplugin.SORT_METHOD_UNSORTED, xbmcplugin.SORT_METHOD_LABEL, xbmcplugin.SORT_METHOD_DATEADDED])
+
+    items = _process_rows(data['videos'], content_class='ContinueWatchingSet')
+    folder.add_items(items)
+
+    return folder
+
+@plugin.route()
+def suggested(family_id=None, series_id=None, **kwargs):
+    if family_id:
+        data = api.video_bundle(family_id)
+    elif series_id:
+        data = api.series_bundle(series_id, page_size=0)
+
+    folder = plugin.Folder(_.SUGGESTED)
+
+    items = _process_rows(data['related']['items'])
+    folder.add_items(items)
+
+    return folder
+
+@plugin.route()
+def extras(family_id=None, series_id=None, **kwargs):
+    if family_id:
+        data = api.video_bundle(family_id)
+        fanart = _image(data['video']['images'], 'fanart')
+    elif series_id:
+        data = api.series_bundle(series_id, page_size=0)
+        fanart = _image(data['series']['images'], 'fanart')
+
+    folder = plugin.Folder(_.EXTRAS, fanart=fanart)
+
+    items = _process_rows(data['extras']['videos'])
+    folder.add_items(items)
+
+    return folder
+
+@plugin.route()
+def search(query=None, page=1, **kwargs):
+    page  = int(page)
+
+    if not query:
+        query = gui.input(_.SEARCH, default=userdata.get('search', '')).strip()
+        if not query:
+            return
+
+        userdata.set('search', query)
+
+    folder = plugin.Folder(_(_.SEARCH_FOR, query=query))
+
+    data = api.search(query, page=page, page_size=PAGE_SIZE)
+
+    hits = [x['hit'] for x in data['hits']]
+    items = _process_rows(hits)
+    folder.add_items(items)
+
+    if not folder.items:
+        return gui.ok(_.NO_RESULTS, heading=folder.title)
+
+    elif (data['meta']['page_size'] + data['meta']['offset']) < data['meta']['hits']:
+        folder.add_item(
+            label = _(_.NEXT_PAGE, page=page+1),
+            path  = plugin.url_for(search, query=query, page=page+1),
+        )
+
+    return folder
+
+@plugin.route()
+@plugin.login_required()
+def play(media_id, **kwargs):
+    url = api.media_stream(media_id)
+
+    return plugin.Item(
+        path = url,
+        inputstream = inputstream.Widevine(
+            license_key = LICENSE_URL,
+            manifest_type = 'hls',
+            mimetype = 'application/vnd.apple.mpegurl',
+        ),
+        headers = api.session.headers,
+    )  
+
+@plugin.route()
+@plugin.login_required()
+def logout(**kwargs):
+    if not gui.yes_no(_.LOGOUT_YES_NO):
+        return
+
+    api.logout()
+    gui.refresh()
