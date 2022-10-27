@@ -59,6 +59,10 @@ msgid "Playback on Kodi {kodi_ver} requires at least version {ver_required} of t
 "This version was only recently released so should update over the next few days."
 msgstr ""
 
+msgctxt "#30015"
+msgid "Dolby Vision"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"

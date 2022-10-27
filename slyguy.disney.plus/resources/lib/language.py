@@ -15,5 +15,6 @@ class Language(BaseLanguage):
     SEASON               = 30012
     EXTRAS               = 30013
     IA_VER_ERROR         = 30014
+    DOLBY_VISION         = 30015
     
 _ = Language()

@@ -49,7 +49,8 @@ class API(object):
         if not access_token:
             return
 
-        self._session.headers.update({'authorization': 'Bearer {}'.format(access_token)})
+        self._session.headers.update({'Authorization': 'Bearer {}'.format(access_token)})
+        self._session.headers.update({'x-bamsdk-transaction-id': self._transaction_id()})
         self.logged_in = True
 
     def _refresh_token(self):
@@ -66,7 +67,7 @@ class API(object):
 
     def _oauth_token(self, payload, anonymous=False):
         headers = {
-            'authorization': 'Bearer {}'.format(API_KEY),
+            'Authorization': 'Bearer {}'.format(API_KEY),
         }
 
         token_data = self._session.post(AUTH_URL + '/token', data=payload, headers=headers).json()
@@ -91,7 +92,7 @@ class API(object):
         self.logout()
 
         headers = {
-            'authorization': 'Bearer {}'.format(API_KEY),
+            'Authorization': 'Bearer {}'.format(API_KEY),
         }
 
         payload = {
@@ -203,10 +204,19 @@ class API(object):
     def media_stream(self, media_id):
         self._refresh_token()
 
-        scenario = 'restricted-drm-ctr-sw'
-      #  scenario = 'android~unlimited' if (xbmc.getCondVisibility('system.platform.android') and settings.getBool('wv_secure', False)) else 'restricted-drm-ctr-sw'
+        if (xbmc.getCondVisibility('system.platform.android') and settings.getBool('wv_secure', False)):
+            if settings.getBool('dolby_vision', False):
+                scenario = 'android-tv-drm-ctr-h265-dovi'
+            else:
+                scenario = 'android-tv-drm-ctr-h265-hdr10'
+        else:
+            scenario = 'restricted-drm-ctr-sw'
+
         href = PLAY_URL.format(media_id=media_id, scenario=scenario)
-        headers = {'accept': 'application/vnd.media-service+json; version=2', 'authorization': userdata.get('access_token')}
+
+        headers = {}
+        headers.update(HEADERS)
+        headers.update({'accept': 'application/vnd.media-service+json; version=4', 'authorization': userdata.get('access_token')})
 
         return self._session.get(href, headers=headers).json()['stream']['complete']
 
@@ -218,7 +228,6 @@ class API(object):
         
         self.new_session()
 
-    # @cached(60*60)
     # def videos(self, content_id):
     #     variables = {
     #         'preferredLanguage': [self._language],

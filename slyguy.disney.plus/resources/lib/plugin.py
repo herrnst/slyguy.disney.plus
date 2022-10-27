@@ -199,7 +199,7 @@ def _parse_video(row):
             (_.EXTRAS, "Container.Update({})".format(plugin.url_for(extras, family_id=row['encodedParentOf']))),
             (_.SUGGESTED, "Container.Update({})".format(plugin.url_for(suggested, family_id=row['encodedParentOf']))),
         ],
-        path= plugin.url_for(play, media_id=row['mediaMetadata']['mediaId']),
+        path= plugin.url_for(play, media_id=row['mediaMetadata']['mediaId'], audio_lang=row['originalLanguage']),
         playable = True,
     )
 
@@ -349,7 +349,7 @@ def search(query=None, page=1, **kwargs):
 
 @plugin.route()
 @plugin.login_required()
-def play(media_id, **kwargs):
+def play(media_id, audio_lang='en', **kwargs):
     kodi_ver = get_kodi_version()
     if kodi_ver > 18:
         ver_required = '2.5.5'
@@ -365,10 +365,17 @@ def play(media_id, **kwargs):
     if not ia.check() or not inputstream.require_version(ver_required):
         plugin.exception(_(_.IA_VER_ERROR, kodi_ver=kodi_ver, ver_required=ver_required))
 
+    headers = api.session.headers
+    headers.update({'_proxy_original_audio_language': audio_lang})
+
     return plugin.Item(
         path = api.media_stream(media_id),
         inputstream = ia,
         headers = api.session.headers,
+        properties = {
+            'inputstream.adaptive.original_audio_language': audio_lang,
+        },
+        use_proxy = True,
     )
 
 @plugin.route()
