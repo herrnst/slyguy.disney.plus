@@ -16,5 +16,7 @@ class Language(BaseLanguage):
     EXTRAS               = 30013
     IA_VER_ERROR         = 30014
     DOLBY_VISION         = 30015
+    SELECT_PROFILE       = 30016
+    KID_LOCKDOWN         = 30017
     
 _ = Language()

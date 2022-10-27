@@ -93,9 +93,9 @@ class API(object):
         }
 
         payload = {
-            'deviceFamily': 'browser',
-            'applicationRuntime': 'chrome',
-            'deviceProfile': 'windows',
+            'deviceFamily': 'android',
+            'applicationRuntime': 'android',
+            'deviceProfile': 'phone',
             'attributes': {},
         }
 
@@ -104,7 +104,7 @@ class API(object):
         payload = {
             'subject_token': device_data['assertion'],
             'subject_token_type': 'urn:bamtech:params:oauth:token-type:device',
-            'platform': 'browser',
+            'platform': 'android',
             'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
         }
 
@@ -127,7 +127,31 @@ class API(object):
         payload = {
             'subject_token': grant_data['assertion'],
             'subject_token_type': 'urn:bamtech:params:oauth:token-type:account',
-            'platform': 'browser',
+            'platform': 'android',
+            'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+        }
+
+        self._oauth_token(payload)
+
+    def profiles(self):
+        self._refresh_token()
+        
+        return self._session.get(AUTH_URL + '/accounts/me/profiles').json()
+
+    def active_profile(self):
+        self._refresh_token()
+
+        return self._session.get(AUTH_URL + '/accounts/me/active-profile').json()
+
+    def set_profile(self, profile_id):
+        self._refresh_token()
+
+        grant_data = self._session.put(AUTH_URL + '/accounts/me/active-profile/' + profile_id).json()
+
+        payload = {
+            'subject_token': grant_data['assertion'],
+            'subject_token_type': 'urn:bamtech:params:oauth:token-type:account',
+            'platform': 'android',
             'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
         }
 

@@ -3,7 +3,7 @@ from kodi_six import xbmcplugin
 from slyguy import plugin, gui, userdata, signals, inputstream, settings
 from slyguy.log import log
 from slyguy.exceptions import PluginError
-from slyguy.util import get_kodi_version
+from slyguy.constants import KODI_VERSION
 
 from .api import API
 from .language import _
@@ -18,7 +18,7 @@ def before_dispatch():
 
 @plugin.route('')
 def index(**kwargs):
-    folder = plugin.Folder()
+    folder = plugin.Folder(cacheToDisc=False)
 
     if not api.logged_in:
         folder.add_item(label=_(_.LOGIN, _bold=True),  path=plugin.url_for(login))
@@ -29,8 +29,11 @@ def index(**kwargs):
         folder.add_item(label=_(_.ORIGINALS, _bold=True),  path=plugin.url_for(collection, slug='originals', content_class='originals'))
         folder.add_item(label=_(_.SEARCH, _bold=True),  path=plugin.url_for(search))
 
-        folder.add_item(label=_.LOGOUT, path=plugin.url_for(logout))
+        if not userdata.get('kid_lockdown', False):
+            folder.add_item(label=_.SELECT_PROFILE, path=plugin.url_for(select_profile))
 
+        folder.add_item(label=_.LOGOUT, path=plugin.url_for(logout))
+    
     folder.add_item(label=_.SETTINGS, path=plugin.url_for(plugin.ROUTE_SETTINGS))
 
     return folder
@@ -48,7 +51,41 @@ def login(**kwargs):
         return
 
     api.login(username, password)
+    _select_profile()
     gui.refresh()
+
+@plugin.route()
+def select_profile(**kwargs):
+    if userdata.get('kid_lockdown', False):
+        return
+        
+    _select_profile()
+    gui.refresh()
+
+def _select_profile():
+    active   = api.active_profile()
+    profiles = api.profiles()
+
+    options = []
+    default = None
+    for index, profile in enumerate(profiles):
+        # item = plugin.Item(
+        #     label = profile['profileName'],
+        # )
+     #   options.append(item.get_li())
+        options.append(profile['profileName'])
+
+        if profile['profileId'] == active['profileId']:
+            default = index
+
+    index = gui.select(_.SELECT_PROFILE, options=options, preselect=default, useDetails=False)
+    if index < 0:
+        return
+
+    api.set_profile(profiles[index]['profileId'])
+
+    if settings.getBool('kid_lockdown', False) and profiles[index]['attributes']['kidsModeEnabled']:
+        userdata.set('kid_lockdown', True)
 
 @plugin.route()
 def collection(slug, content_class, label=None, **kwargs):
@@ -350,8 +387,7 @@ def search(query=None, page=1, **kwargs):
 @plugin.route()
 @plugin.login_required()
 def play(media_id, original_lang='en', **kwargs):
-    kodi_ver = get_kodi_version()
-    if kodi_ver > 18:
+    if KODI_VERSION > 18:
         ver_required = '2.5.5'
     else:
         ver_required = '2.4.4'
@@ -363,7 +399,7 @@ def play(media_id, original_lang='en', **kwargs):
     )
 
     if not ia.check() or not inputstream.require_version(ver_required):
-        plugin.exception(_(_.IA_VER_ERROR, kodi_ver=kodi_ver, ver_required=ver_required))
+        plugin.exception(_(_.IA_VER_ERROR, kodi_ver=KODI_VERSION, ver_required=ver_required))
 
     headers = api.session.headers
     headers['_proxy_default_language'] = original_lang
@@ -387,4 +423,5 @@ def logout(**kwargs):
         return
 
     api.logout()
+    userdata.delete('kid_lockdown')
     gui.refresh()

@@ -63,6 +63,14 @@ msgctxt "#30015"
 msgid "Dolby Vision"
 msgstr ""
 
+msgctxt "#30016"
+msgid "Select Profile"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Disable profile switching in Kids profile"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"
