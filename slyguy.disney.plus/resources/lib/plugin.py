@@ -7,7 +7,7 @@ from slyguy.constants import KODI_VERSION
 
 from .api import API
 from .language import _
-from .constants import LICENSE_URL, PAGE_SIZE
+from .constants import PAGE_SIZE
 
 api = API()
 
@@ -82,7 +82,7 @@ def _select_profile():
     if index < 0:
         return
 
-    api.set_profile(profiles[index]['profileId'])
+    api.set_profile(profiles[index])
 
     if settings.getBool('kid_lockdown', False) and profiles[index]['attributes']['kidsModeEnabled']:
         userdata.set('kid_lockdown', True)
@@ -236,7 +236,7 @@ def _parse_video(row):
             (_.EXTRAS, "Container.Update({})".format(plugin.url_for(extras, family_id=row['encodedParentOf']))),
             (_.SUGGESTED, "Container.Update({})".format(plugin.url_for(suggested, family_id=row['encodedParentOf']))),
         ],
-        path= plugin.url_for(play, media_id=row['mediaMetadata']['mediaId'], original_lang=row['originalLanguage']),
+        path= plugin.url_for(play, content_id=row['contentId']),
         playable = True,
     )
 
@@ -386,14 +386,14 @@ def search(query=None, page=1, **kwargs):
 
 @plugin.route()
 @plugin.login_required()
-def play(media_id, original_lang='en', **kwargs):
+def play(content_id, **kwargs):
     if KODI_VERSION > 18:
         ver_required = '2.5.5'
     else:
         ver_required = '2.4.4'
 
     ia = inputstream.Widevine(
-        license_key = LICENSE_URL,
+        license_key = api.get_config()['services']['drm']['client']['endpoints']['widevineLicense']['href'],
         manifest_type = 'hls',
         mimetype = 'application/vnd.apple.mpegurl',
     )
@@ -401,23 +401,29 @@ def play(media_id, original_lang='en', **kwargs):
     if not ia.check() or not inputstream.require_version(ver_required):
         plugin.exception(_(_.IA_VER_ERROR, kodi_ver=KODI_VERSION, ver_required=ver_required))
 
+    video = api.videos(content_id)['videos'][0]
+    playback_url = video['mediaMetadata']['playbackUrls'][0]['href']
+    media_stream = api.media_stream(playback_url)
+    
     headers = api.session.headers
-    headers['_proxy_default_language'] = original_lang
+    headers['_proxy_default_language'] = video['originalLanguage']
 
     item = plugin.Item(
-        path = api.media_stream(media_id),
+        path = media_stream,
         inputstream = ia,
-        headers = api.session.headers,
+        headers = headers,
         properties = {
-            'inputstream.adaptive.original_audio_language': original_lang,
+            'inputstream.adaptive.original_audio_language': video['originalLanguage'],
         },
         use_proxy = True,
     )
+
+    if settings.getBool('wv_secure', False):
+        item.properties['inputstream.adaptive.license_flags'] = 'force_secure_decoder'
     
     return item
 
 @plugin.route()
-@plugin.login_required()
 def logout(**kwargs):
     if not gui.yes_no(_.LOGOUT_YES_NO):
         return

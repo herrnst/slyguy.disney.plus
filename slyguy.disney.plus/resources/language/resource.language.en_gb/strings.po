@@ -71,6 +71,26 @@ msgctxt "#30017"
 msgid "Disable profile switching in Kids profile"
 msgstr ""
 
+msgctxt "#30018"
+msgid "HDR10"
+msgstr ""
+
+msgctxt "#30019"
+msgid "H265"
+msgstr ""
+
+msgctxt "#30020"
+msgid "App Language"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Kodi Language"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Profile Language"
+msgstr ""
+
 ## COMMON SETTINGS ##
 
 msgctxt "#32034"

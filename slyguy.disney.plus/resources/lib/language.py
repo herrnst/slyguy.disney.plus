@@ -18,5 +18,10 @@ class Language(BaseLanguage):
     DOLBY_VISION         = 30015
     SELECT_PROFILE       = 30016
     KID_LOCKDOWN         = 30017
+    HDR10                = 30018
+    H265                 = 30019
+    APP_LANGUAGE         = 30020
+    LANG_PROFILE         = 30021
+    LANG_KODI            = 30022
     
 _ = Language()
