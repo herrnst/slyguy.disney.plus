@@ -5,6 +5,7 @@ from time import time
 from slyguy import userdata, settings
 from slyguy.session import Session
 from slyguy.exceptions import Error
+from slyguy.util import kodi_setting
 from slyguy import mem_cache
 
 from kodi_six import xbmc
@@ -25,17 +26,17 @@ class API(object):
     def _set_language(self):
         self._language = 'en'
 
-        try:
-            value = json.loads(xbmc.executeJSONRPC('{{"jsonrpc":"2.0", "method":"Settings.GetSettingValue", "params":{{"setting":"{}"}}, "id":1}}'.format('locale.language')))['result']['value']
-            value = value.split('.')[-1]
-            split = value.split('_')
+        value = kodi_setting('locale.language')
+        if not value:
+            return
 
-            if split > 1:
-                split[1] = split[1].upper()
+        value = value.split('.')[-1]
+        split = value.split('_')
 
-            self._language = '-'.join(split)
-        except:
-            pass
+        if split > 1:
+            split[1] = split[1].upper()
+
+        self._language = '-'.join(split)
 
     @mem_cache.cached(60*60, key='transaction_id')
     def _transaction_id(self):
