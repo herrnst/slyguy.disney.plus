@@ -569,6 +569,10 @@ def play(content_id, skip_intro=None, continue_watching=0, **kwargs):
     headers = api.session.headers
     headers['_proxy_default_language'] = original_language
 
+    ## Allow fullres worldwide ##
+    media_stream = media_stream.replace('/mickey/ps01/', '/ps01/')
+    ##############
+
     item = _parse_video(video)
     item.update(
         path = media_stream,

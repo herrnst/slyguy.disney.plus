@@ -52,5 +52,7 @@ class Language(BaseLanguage):
     AVAILABLE                = 30049
     AVAILABLE_FORMAT         = 30050
     NO_VIDEO_FOUND           = 30051
+    DOLBY_ATMOS              = 30052
+    PROFLE_AT_RUN            = 30053
 
 _ = Language()

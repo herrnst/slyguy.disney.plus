@@ -4,6 +4,7 @@
         <setting label="30020" id="app_language" type="enum" default="0" lvalues="30021|30022"/>
         <setting label="30024" type="bool" id="skip_intros" default="false"/>
         <setting label="30017" type="bool" id="kid_lockdown" default="false"/>
+        <!-- <setting label="30053" type="bool" id="profile_on_start" default="false"/> -->
     </category>
 
     <category label="$ADDON[script.module.slyguy 32035]">
