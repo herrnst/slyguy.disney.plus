@@ -27,20 +27,18 @@ class API(object):
     def _set_language(self):
         self._language = 'en'
 
-        try:
-            value = kodi_setting('locale.language')
-            if not value:
-                return
+        value = kodi_setting('locale.language')
+        if not value:
+            return
 
-            value = value.split('.')[-1]
-            split = value.split('_')
+        value = value.split('.')[-1]
+        split = value.split('_')
 
-            if len(split) > 1:
-                split[1] = split[1].upper()
+        if len(split) > 1:
+            split[1] = split[1].upper()
 
-            self._language = '-'.join(split)
-        except Exception as e:
-            log.exception(e)
+        self._language = '-'.join(split)
+        log.debug("API Language Set: {}".format(self._language))
 
     @mem_cache.cached(60*60, key='transaction_id')
     def _transaction_id(self):
