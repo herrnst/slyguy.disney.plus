@@ -7,6 +7,7 @@ from slyguy.session import Session
 from slyguy.exceptions import Error
 from slyguy.util import kodi_setting
 from slyguy import mem_cache
+from slyguy.log import log
 
 from kodi_six import xbmc
 
@@ -26,17 +27,20 @@ class API(object):
     def _set_language(self):
         self._language = 'en'
 
-        value = kodi_setting('locale.language')
-        if not value:
-            return
+        try:
+            value = kodi_setting('locale.language')
+            if not value:
+                return
 
-        value = value.split('.')[-1]
-        split = value.split('_')
+            value = value.split('.')[-1]
+            split = value.split('_')
 
-        if len(split) > 1:
-            split[1] = split[1].upper()
+            if len(split) > 1:
+                split[1] = split[1].upper()
 
-        self._language = '-'.join(split)
+            self._language = '-'.join(split)
+        except Exception as e:
+            log.exception(e)
 
     @mem_cache.cached(60*60, key='transaction_id')
     def _transaction_id(self):
