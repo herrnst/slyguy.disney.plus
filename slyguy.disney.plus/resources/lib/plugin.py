@@ -292,9 +292,9 @@ def _process_rows(rows, content_class=None):
             continue
 
         if content_class == 'WatchlistSet':
-            item.context.insert(0, (_.DELETE_WATCHLIST, 'XBMC.RunPlugin({})'.format(plugin.url_for(delete_watchlist, content_id=row['contentId']))))
+            item.context.insert(0, (_.DELETE_WATCHLIST, 'RunPlugin({})'.format(plugin.url_for(delete_watchlist, content_id=row['contentId']))))
         elif content_type == 'DmcSeries' or (content_type == 'DmcVideo' and program_type != 'episode'):
-            item.context.insert(0, (_.ADD_WATCHLIST, 'XBMC.RunPlugin({})'.format(plugin.url_for(add_watchlist, content_id=row['contentId'], title=item.label, icon=item.art.get('thumb')))))
+            item.context.insert(0, (_.ADD_WATCHLIST, 'RunPlugin({})'.format(plugin.url_for(add_watchlist, content_id=row['contentId'], title=item.label, icon=item.art.get('thumb')))))
 
         if content_class == 'ContinueWatchingSet':
             item.properties['ResumeTime'] = 1
@@ -380,9 +380,9 @@ def _parse_video(row):
 
     if _get_milestone(row.get('milestones'), 'intro_end'):
         if settings.getBool('skip_intros', False):
-            item.context.append((_.INCLUDE_INTRO, 'XBMC.PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=0))))
+            item.context.append((_.INCLUDE_INTRO, 'PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=0))))
         else:
-            item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
+            item.context.append((_.SKIP_INTRO, 'PlayMedia({},noresume)'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
 
     if row['programType'] == 'episode':
         item.info.update({
