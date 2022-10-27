@@ -44,17 +44,17 @@ msgctxt "#30008"
 msgid "Next Page ({page})"
 msgstr "Nächste Seite ({page})"
 
-#msgctxt "#30009"
-#msgid "Widevine L1 Secure Device"
-#msgstr "Widevine L1 Secure Device"
+msgctxt "#30009"
+msgid "Widevine L1 Secure Device"
+msgstr "Widevine L1 Secure Device"
 
 msgctxt "#30010"
 msgid "Suggested"
 msgstr "Empfehlungen"
 
-#msgctxt "#30011"
-#msgid "Featured"
-#msgstr ""
+msgctxt "#30011"
+msgid "Featured"
+msgstr "Vorgestellt"
 
 msgctxt "#30012"
 msgid "Season {season}"
@@ -65,18 +65,48 @@ msgid "Extras"
 msgstr "Extras"
 
 msgctxt "#30014"
-msgid ""
-"Playback on Kodi {kodi_ver} requires at least version {ver_required} of the "
-"Inputstream Adaptive add-on\n"
-"This version was only recently released so should update over the next few "
-"days."
+msgid "Playback on Kodi {kodi_ver} requires at least version {ver_required} of the Inputstream Adaptive add-on\n"
+"This version was only recently released so should update over the next few days."
 msgstr ""
 "Wiedergabe unter Kodi {kodi_ver} erfordert mindestens Version {ver_required} "
 "des Inputstream-Adaptive-Add-ons.\n"
-"Diese Version wurde erst vor kurzem veröffentlicht und sollte in den nächsten"
-" Tagen verfügbar sein."
+"Diese Version wurde erst vor kurzem veröffentlicht und sollte in den "
+"nächsten Tagen verfügbar sein."
 
-# # COMMON SETTINGS ##
+msgctxt "#30015"
+msgid "Dolby Vision"
+msgstr "Dolby Vision"
+
+msgctxt "#30016"
+msgid "Select Profile"
+msgstr "Profil auswählen"
+
+msgctxt "#30017"
+msgid "Disable profile switching in Kids profile"
+msgstr "Profilwechsel in Kinderprofil verbieten"
+
+msgctxt "#30018"
+msgid "HDR10"
+msgstr "HDR10"
+
+msgctxt "#30019"
+msgid "H265"
+msgstr "H.265"
+
+msgctxt "#30020"
+msgid "App Language"
+msgstr "Anwendungssprache"
+
+msgctxt "#30021"
+msgid "Kodi Language"
+msgstr "Kodi-Sprache"
+
+msgctxt "#30022"
+msgid "Profile Language"
+msgstr "Profilsprache"
+
+## COMMON SETTINGS ##
+
 msgctxt "#32034"
 msgid "General"
 msgstr "Allgemein"
@@ -159,7 +189,7 @@ msgstr "Add-on zurücksetzen"
 
 #msgctxt "#32066"
 #msgid "Ask"
-#msgstr ""
+#msgstr "Nachfragen"
 
 #msgctxt "#32065"
 #msgid "From Live"
@@ -170,5 +200,5 @@ msgstr "Add-on zurücksetzen"
 #msgstr ""
 
 msgctxt "#32076"
-msgid "Benutze Inputstream HLS für Live-Streams"
-msgstr ""
+msgid "Use Inputstream HLS for Live Streams"
+msgstr "Benutze Inputstream HLS für Livestreams"
