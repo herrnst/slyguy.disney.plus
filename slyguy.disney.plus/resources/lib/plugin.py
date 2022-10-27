@@ -222,7 +222,7 @@ def _parse_video(row):
         playable = True,
     )
 
-    if _get_milestone(row.get('milestones'), 'intro_end'):
+    if _get_milestone(row.get('milestones'), 'intro_end') and not settings.getBool('skip_intros', False):
         item.context.append((_.SKIP_INTRO, 'XBMC.PlayMedia({})'.format(plugin.url_for(play, content_id=row['contentId'], skip_intro=1))))
 
     if row['programType'] == 'episode':
