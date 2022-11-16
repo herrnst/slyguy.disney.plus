@@ -17,7 +17,7 @@ try:
 except ImportError:
     from six.moves.urllib_parse import urlparse
 
-from kodi_six import xbmc
+from kodi_six import xbmc, xbmcvfs
 import dns.resolver
 
 from slyguy import userdata, settings, signals, mem_cache, log, _
@@ -288,11 +288,11 @@ class RawSession(requests.Session):
             log.debug('Downloading cert: {}'.format(url))
             resp = self.request('get', url, stream=True)
 
-            self._cert = xbmc.translatePath('special://temp/temp.pem')
+            self._cert = xbmcvfs.translatePath('special://temp/temp.pem')
             with open(self._cert, 'wb') as f:
                 shutil.copyfileobj(resp.raw, f)
 
-        return xbmc.translatePath(self._cert)
+        return xbmcvfs.translatePath(self._cert)
 
     def set_proxy(self, proxy):
         self._proxy = proxy

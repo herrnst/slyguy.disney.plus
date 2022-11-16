@@ -11,7 +11,7 @@ try:
 except ImportError:
     from six.moves.urllib_parse import quote_plus
 
-from kodi_six import xbmc, xbmcplugin
+from kodi_six import xbmc, xbmcplugin, xbmcvfs
 
 from slyguy import router, gui, settings, userdata, inputstream, signals, migrate, bookmarks, mem_cache, is_donor, log, _
 from slyguy.constants import *
@@ -91,7 +91,7 @@ def plugin_request():
         @wraps(func)
         def decorated_function(*args, **kwargs):
             if '_path' in kwargs:
-                kwargs['_path'] = xbmc.translatePath(kwargs['_path'])
+                kwargs['_path'] = xbmcvfs.translatePath(kwargs['_path'])
                 with open(kwargs['_path'], 'rb') as f:
                     kwargs['_data'] = f.read()
                 remove_file(kwargs['_path'])

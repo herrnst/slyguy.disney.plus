@@ -7,7 +7,7 @@ try:
 except ImportError:
     from six.moves.urllib_parse import urlparse
 
-from kodi_six import xbmcgui, xbmc
+from kodi_six import xbmcgui, xbmc, xbmcvfs
 
 from slyguy import settings, _
 from slyguy.constants import *
@@ -381,7 +381,7 @@ class Item(object):
             self.inputstream = None
 
         def make_sub(url, language='unk', mimetype='', forced=False, impaired=False):
-            if os.path.exists(xbmc.translatePath(url)):
+            if os.path.exists(xbmcvfs.translatePath(url)):
                 return url
 
             ## using dash, we can embed subs

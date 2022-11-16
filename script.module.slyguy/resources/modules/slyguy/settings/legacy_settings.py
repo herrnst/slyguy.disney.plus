@@ -1,7 +1,7 @@
 import json
 import os
 
-from kodi_six import xbmc, xbmcaddon
+from kodi_six import xbmc, xbmcaddon, xbmcvfs
 
 from slyguy.constants import ADDON, ADDON_ID
 from slyguy import signals
@@ -98,7 +98,7 @@ def check_corrupt(addon):
     addon = xbmcaddon.Addon(addon.getAddonInfo('id'))
 
     if addon.getSetting('_fresh') != 'false':
-        file_path = os.path.join(xbmc.translatePath(addon.getAddonInfo('profile')), 'settings.xml')
+        file_path = os.path.join(xbmcvfs.translatePath(addon.getAddonInfo('profile')), 'settings.xml')
         log.debug('Removing corrupt settings.xml: {}'.format(file_path))
         remove_file(file_path)
         addon = xbmcaddon.Addon(addon.getAddonInfo('id'))

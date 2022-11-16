@@ -1,14 +1,14 @@
 import os
 
-from kodi_six import xbmc, xbmcaddon
+from kodi_six import xbmc, xbmcaddon, xbmcvfs
 
 ##### ADDON ####
 ADDON          = xbmcaddon.Addon(os.environ.get('ADDON_ID', ''))
 ADDON_ID       = ADDON.getAddonInfo('id')
 ADDON_VERSION  = ADDON.getAddonInfo('version')
 ADDON_NAME     = ADDON.getAddonInfo('name')
-ADDON_PATH     = xbmc.translatePath(ADDON.getAddonInfo('path'))
-ADDON_PROFILE  = xbmc.translatePath(ADDON.getAddonInfo('profile'))
+ADDON_PATH     = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
+ADDON_PROFILE  = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
 ADDON_ICON     = ADDON.getAddonInfo('icon')
 ADDON_FANART   = ADDON.getAddonInfo('fanart')
 ADDON_DEV      = bool(int(os.environ.get('SLYGUY_DEV', '0')))

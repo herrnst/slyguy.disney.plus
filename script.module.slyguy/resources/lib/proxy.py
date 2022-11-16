@@ -25,7 +25,7 @@ try:
 except ImportError:
     from six.moves.urllib.parse import urlparse, urljoin, unquote_plus, parse_qsl
 
-from kodi_six import xbmc
+from kodi_six import xbmc, xbmcaddon, xbmcvfs
 from pycaption import detect_format, WebVTTWriter
 
 from slyguy import gui, settings, log, _
@@ -80,7 +80,7 @@ def middleware_convert_sub(response, **kwargs):
         data = WebVTTWriter().write(reader().read(data))
         if ADDON_DEV:
             path = 'special://temp/convert_sub.middleware'
-            real_path = xbmc.translatePath(path)
+            real_path = xbmcvfs.translatePath(path)
             with open(real_path, 'wb') as f:
                 f.write(data.encode('utf8'))
         response.stream.content = data.encode('utf8')
@@ -88,7 +88,7 @@ def middleware_convert_sub(response, **kwargs):
 
 def middleware_plugin(response, url, **kwargs):
     path = 'special://temp/proxy.middleware'
-    real_path = xbmc.translatePath(path)
+    real_path = xbmcvfs.translatePath(path)
     with open(real_path, 'wb') as f:
         f.write(response.stream.content)
 
@@ -218,7 +218,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         if self._post_data:
             path = 'special://temp/proxy.plugin_request'
-            real_path = xbmc.translatePath(path)
+            real_path = xbmcvfs.translatePath(path)
             with open(real_path, 'wb') as f:
                 f.write(self._post_data)
 
@@ -508,7 +508,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if ADDON_DEV:
             pretty = root.toprettyxml(encoding='utf-8')
             pretty = b"\n".join([ll.rstrip() for ll in pretty.splitlines() if ll.strip()])
-            with open(xbmc.translatePath('special://temp/in.mpd'), 'wb') as f:
+            with open(xbmcvfs.translatePath('special://temp/in.mpd'), 'wb') as f:
                 f.write(pretty)
 
         mpd = root.getElementsByTagName("MPD")[0]
@@ -983,7 +983,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if ADDON_DEV:
             mpd = root.toprettyxml(encoding='utf-8')
             mpd = b"\n".join([ll.rstrip() for ll in mpd.splitlines() if ll.strip()])
-            with open(xbmc.translatePath('special://temp/out.mpd'), 'wb') as f:
+            with open(xbmcvfs.translatePath('special://temp/out.mpd'), 'wb') as f:
                 f.write(mpd)
         else:
             mpd = root.toxml(encoding='utf-8')
@@ -1275,7 +1275,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if ADDON_DEV:
             _m3u8 = m3u8.encode('utf8')
             _m3u8 = b"\n".join([ll.rstrip() for ll in _m3u8.splitlines() if ll.strip()])
-            with open(xbmc.translatePath('special://temp/'+file_name+'-in.m3u8'), 'wb') as f:
+            with open(xbmcvfs.translatePath('special://temp/'+file_name+'-in.m3u8'), 'wb') as f:
                 f.write(_m3u8)
 
         if is_master:
@@ -1300,7 +1300,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         if ADDON_DEV:
             m3u8 = b"\n".join([ll.rstrip() for ll in m3u8.splitlines() if ll.strip()])
-            with open(xbmc.translatePath('special://temp/'+file_name+'-out.m3u8'), 'wb') as f:
+            with open(xbmcvfs.translatePath('special://temp/'+file_name+'-out.m3u8'), 'wb') as f:
                 f.write(m3u8)
 
         response.stream.content = m3u8
@@ -1329,7 +1329,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return response
 
         if self._post_data and ADDON_DEV:
-            with open(xbmc.translatePath('special://temp/request.data'), 'wb') as f:
+            with open(xbmcvfs.translatePath('special://temp/request.data'), 'wb') as f:
                 f.write(self._post_data)
 
         if not self._session.get('session'):
@@ -1407,7 +1407,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self._output_headers(response)
 
         if ADDON_DEV:
-            f = open(xbmc.translatePath('special://temp/response.data'), 'wb')
+            f = open(xbmcvfs.translatePath('special://temp/response.data'), 'wb')
         else:
             f = None
 
@@ -1436,7 +1436,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
             license_data = response.stream.content
             if ADDON_DEV:
-                with open(xbmc.translatePath('special://temp/license.data'), 'wb') as f:
+                with open(xbmcvfs.translatePath('special://temp/license.data'), 'wb') as f:
                     f.write(license_data)
 
             if response.ok and license_data:

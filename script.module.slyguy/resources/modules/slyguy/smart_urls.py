@@ -1,7 +1,7 @@
 import os
 
 import requests
-from kodi_six import xbmc, xbmcaddon
+from kodi_six import xbmc, xbmcaddon, xbmcvfs
 
 from slyguy import settings, is_donor, log
 from slyguy.log import log
@@ -46,13 +46,13 @@ def _load_rewrites(addon_id):
     ]
 
     try:
-        directory = xbmc.translatePath(xbmcaddon.Addon(addon_id).getAddonInfo('profile'))
+        directory = xbmcvfs.translatePath(xbmcaddon.Addon(addon_id).getAddonInfo('profile'))
     except:
         return rewrites
 
     found = False
     for name in file_names:
-        file_path = os.path.join(xbmc.translatePath(directory), name)
+        file_path = os.path.join(xbmcvfs.translatePath(directory), name)
         if os.path.exists(file_path):
             found = True
             break

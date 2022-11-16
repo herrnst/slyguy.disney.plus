@@ -70,7 +70,7 @@ def check_port(port=0, default=False):
 
 def kodi_db(name):
     options = []
-    db_dir = xbmc.translatePath('special://database')
+    db_dir = xbmcvfs.translatePath('special://database')
 
     for file in os.listdir(db_dir):
         db_path = os.path.join(db_dir, file)
@@ -200,8 +200,8 @@ def same_file(path_a, path_b):
     return (stat_a.st_dev == stat_b.st_dev) and (stat_a.st_ino == stat_b.st_ino) and (stat_a.st_mtime == stat_b.st_mtime)
 
 def safe_copy(src, dst, del_src=False):
-    src = xbmc.translatePath(src)
-    dst = xbmc.translatePath(dst)
+    src = xbmcvfs.translatePath(src)
+    dst = xbmcvfs.translatePath(dst)
 
     if not xbmcvfs.exists(src) or same_file(src, dst):
         return
@@ -425,7 +425,7 @@ def get_system_arch():
         system = 'Android'
     elif xbmc.getCondVisibility('System.Platform.WebOS') or os.path.exists('/var/run/nyx/os_info.json'):
         system = 'WebOS'
-    elif xbmc.getCondVisibility('System.Platform.UWP') or '4n2hpmxwrvr6p' in xbmc.translatePath('special://xbmc/'):
+    elif xbmc.getCondVisibility('System.Platform.UWP') or '4n2hpmxwrvr6p' in xbmcvfs.translatePath('special://xbmc/'):
         system = 'UWP'
     elif xbmc.getCondVisibility('System.Platform.Windows'):
         system = 'Windows'

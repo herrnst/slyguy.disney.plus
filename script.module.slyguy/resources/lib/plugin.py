@@ -1,7 +1,6 @@
 import re
 
-from kodi_six import xbmc, xbmcaddon
-from six.moves.urllib_parse import urlparse
+from kodi_six import xbmc, xbmcaddon, xbmcvfs
 
 from slyguy import plugin, gui, _
 from slyguy.settings.types import STORAGE
@@ -93,7 +92,7 @@ def update_addons(**kwargs):
 
 @plugin.route()
 def check_log(**kwargs):
-    log_file = xbmc.translatePath('special://logpath/kodi.log')
+    log_file = xbmcvfs.translatePath('special://logpath/kodi.log')
     with open(log_file, 'rb') as f:
         text = f.read()
 

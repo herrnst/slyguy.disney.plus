@@ -81,7 +81,7 @@ def check_repo():
 
     log.info('Repo: {} requires force update'.format(REPO_ADDON_ID))
 
-    addon_path = xbmc.translatePath(addon.getAddonInfo('path'))
+    addon_path = xbmcvfs.translatePath(addon.getAddonInfo('path'))
 
     with Session(timeout=15) as session:
         session.chunked_dl('{0}/.repo/{1}/{1}/addon.xml'.format(REPO_DOMAIN, REPO_ADDON_ID), os.path.join(addon_path, 'addon.xml.downloading'))

@@ -4,7 +4,7 @@ import struct
 import json
 import shutil
 
-from kodi_six import xbmc
+from kodi_six import xbmc, xbmcvfs
 
 from slyguy import gui, settings, log, _
 from slyguy.session import Session
@@ -145,7 +145,7 @@ def set_bandwidth_bin(bps):
     if not addon:
         return
 
-    addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
+    addon_profile = xbmcvfs.translatePath(addon.getAddonInfo('profile'))
     bin_path = os.path.join(addon_profile, 'bandwidth.bin')
 
     if not os.path.exists(addon_profile):
@@ -222,7 +222,7 @@ def install_widevine(reinstall=False):
     if system not in DST_FILES:
         raise InputStreamError(_(_.IA_NOT_SUPPORTED, system=system, arch=arch, kodi_version=KODI_VERSION))
 
-    decryptpath = xbmc.translatePath(ia_addon.getSetting('DECRYPTERPATH') or ia_addon.getAddonInfo('profile'))
+    decryptpath = xbmcvfs.translatePath(ia_addon.getSetting('DECRYPTERPATH') or ia_addon.getAddonInfo('profile'))
     wv_path = os.path.join(decryptpath, DST_FILES[system])
     installed = md5sum(wv_path)
     log.info('Widevine Current MD5: {}'.format(installed))

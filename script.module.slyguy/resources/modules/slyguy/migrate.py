@@ -3,7 +3,7 @@ import sys
 import shutil
 import time
 
-from kodi_six import xbmc, xbmcaddon, xbmcplugin
+from kodi_six import xbmc, xbmcaddon, xbmcplugin, xbmcvfs
 
 from slyguy import gui, router, _
 from slyguy.constants import ADDON_ID, ADDON_PROFILE, ROUTE_MIGRATE_DONE
@@ -47,7 +47,7 @@ def do_migrate(new_addon_id, copy_userdata, message):
         return gui.ok(_.MIGRATE_ADDON_NOT_FOUND)
 
     if copy_userdata and os.path.exists(ADDON_PROFILE):
-        dst_profile = xbmc.translatePath(dst_addon.getAddonInfo('profile'))
+        dst_profile = xbmcvfs.translatePath(dst_addon.getAddonInfo('profile'))
 
         if os.path.exists(dst_profile):
             shutil.rmtree(dst_profile)
@@ -77,8 +77,8 @@ def migrate_done(old_addon_id):
 
         xbmc.executeJSONRPC('{{"jsonrpc":"2.0","id":1,"method":"Addons.SetAddonEnabled","params":{{"addonid":"{}","enabled":false}}}}'.format(old_addon_id))
 
-        old_addon_dir =  xbmc.translatePath(old_addon.getAddonInfo('path'))
-        old_profile = xbmc.translatePath(old_addon.getAddonInfo('profile'))
+        old_addon_dir =  xbmcvfs.translatePath(old_addon.getAddonInfo('path'))
+        old_profile = xbmcvfs.translatePath(old_addon.getAddonInfo('profile'))
 
         if os.path.exists(old_addon_dir):
             shutil.rmtree(old_addon_dir)
