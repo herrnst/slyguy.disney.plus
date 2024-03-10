@@ -16,8 +16,16 @@ import binascii
 from contextlib import closing
 
 from kodi_six import xbmc, xbmcgui, xbmcaddon, xbmcvfs
-from six.moves import queue, range
-from six.moves.urllib.parse import urlparse, urlunparse, quote, parse_qsl
+
+try:
+    import queue
+except ImportError:
+    from six.moves import queue, range
+try:
+    from urllib.parse import urlparse, urlunparse, quote, parse_qsl
+except ImportError:
+    from six.moves.urllib.parse import urlparse, urlunparse, quote, parse_qsl
+
 from requests.models import PreparedRequest
 from six import PY2
 import requests

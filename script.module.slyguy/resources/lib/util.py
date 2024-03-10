@@ -1,6 +1,5 @@
 import os
 from time import time
-from distutils.version import LooseVersion
 
 from kodi_six import xbmc
 
@@ -12,6 +11,14 @@ from slyguy.constants import UPDATE_TIME_LIMIT, REPO_ADDON_ID, REPO_DOMAIN
 
 from .language import _
 from .constants import *
+
+def parse_version(version):
+    try:
+        from packaging.version import parse
+        return parse(version)
+    except ImportError:
+        from distutils.version import LooseVersion  # pylint: disable=deprecated-module
+        return LooseVersion(version)
 
 def get_slyguy_addons():
     with Session(timeout=15) as session:
@@ -47,14 +54,14 @@ def check_updates(force=False):
         cur_version = addon.getAddonInfo('version')
         new_version = slyguy_addons[addon_id]['version']
 
-        if (LooseVersion(new_version).version[0] - LooseVersion(cur_version).version[0]) > 5.0:
+        if (parse_version(new_version).version[0] - parse_version(cur_version).version[0]) > 5.0:
             # if major version more than 5 ahead. ignore
             log.debug('{}: New version {} major more than 5 versions ahead of current version {}. Ignoring update'.format(
                 addon_id, new_version, cur_version
             ))
             continue
 
-        if LooseVersion(cur_version) < LooseVersion(new_version):
+        if parse_version(cur_version) < parse_version(new_version):
             pending_updates[addon_id] = {'name': name, 'cur': cur_version, 'new': new_version}
 
             new_update_times[addon_id] = [cur_version, _time]

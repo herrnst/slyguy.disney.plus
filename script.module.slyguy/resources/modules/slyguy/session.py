@@ -10,7 +10,12 @@ from gzip import GzipFile
 import requests
 import urllib3
 from six import BytesIO
-from six.moves.urllib_parse import urlparse
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from six.moves.urllib_parse import urlparse
+
 from kodi_six import xbmc
 import dns.resolver
 

@@ -4,7 +4,10 @@ __all__ = [
     'HTMLParserTreeBuilder',
     ]
 
-from six.moves.html_parser import HTMLParser
+try:
+    from html.parser import HTMLParser
+except ImportError:
+    from six.moves.html_parser import HTMLParser
 
 try:
     from HTMLParser import HTMLParseError

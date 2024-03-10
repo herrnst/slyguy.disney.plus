@@ -11,9 +11,20 @@ from functools import cmp_to_key
 
 import arrow
 from requests import ConnectionError
-from six.moves.BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from six.moves.socketserver import ThreadingMixIn
-from six.moves.urllib.parse import urlparse, urljoin, unquote_plus, parse_qsl
+
+try:
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+except ImportError:
+    from six.moves.BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+try:
+    from socketserver import ThreadingMixIn
+except ImportError:
+    from six.moves.socketserver import ThreadingMixIn
+try:
+    from urllib.parse import urlparse, urljoin, unquote_plus, parse_qsl
+except ImportError:
+    from six.moves.urllib.parse import urlparse, urljoin, unquote_plus, parse_qsl
+
 from kodi_six import xbmc, xbmcaddon
 from pycaption import detect_format, WebVTTWriter
 

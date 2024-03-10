@@ -5,7 +5,11 @@ import random
 import time
 import json
 from functools import wraps
-from six.moves.urllib_parse import quote_plus
+
+try:
+    from urllib.parse import quote_plus
+except ImportError:
+    from six.moves.urllib_parse import quote_plus
 
 from kodi_six import xbmc, xbmcplugin
 

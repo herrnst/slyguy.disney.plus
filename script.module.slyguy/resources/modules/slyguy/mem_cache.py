@@ -3,7 +3,10 @@ from time import time
 from functools import wraps
 from copy import deepcopy
 
-from six.moves import cPickle
+try:
+    import pickle as cPickle
+except ImportError:
+    from six.moves import cPickle
 
 from . import signals, router
 from .log import log

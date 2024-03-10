@@ -11,7 +11,12 @@ __license__ = "MIT"
 from pdb import set_trace
 import codecs
 import six
-from six.moves.html_entities import codepoint2name
+
+try:
+    from html.entities import codepoint2name
+except ImportError:
+    from six.moves.html_entities import codepoint2name
+
 import re
 import logging
 import string

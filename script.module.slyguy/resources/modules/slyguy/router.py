@@ -1,5 +1,9 @@
 import sys
-from six.moves.urllib_parse import parse_qsl, urlparse, urlencode
+
+try:
+    from urllib.parse import parse_qsl, urlparse, urlencode
+except ImportError:
+    from six.moves.urllib_parse import parse_qsl, urlparse, urlencode
 
 from . import signals
 from .constants import *

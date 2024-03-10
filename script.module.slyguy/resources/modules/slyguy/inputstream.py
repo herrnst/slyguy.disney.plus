@@ -3,7 +3,6 @@ import time
 import struct
 import json
 import shutil
-from distutils.version import LooseVersion
 
 from kodi_six import xbmc
 
@@ -16,6 +15,14 @@ from .language import _
 from .util import md5sum, remove_file, get_system_arch, get_addon, hash_6
 from .exceptions import InputStreamError, CancelDialog
 from .drm import is_wv_secure
+
+def parse_version(version):
+    try:
+        from packaging.version import parse
+        return parse(version)
+    except ImportError:
+        from distutils.version import LooseVersion  # pylint: disable=deprecated-module
+        return LooseVersion(version)
 
 def get_id():
     return IA_ADDON_ID
@@ -185,7 +192,7 @@ def require_version(required_version, required=False):
         return False
 
     current_version = ia_addon.getAddonInfo('version')
-    result = LooseVersion(current_version) >= LooseVersion(required_version)
+    result = parse_version(current_version) >= parse_version(required_version)
     if required and not result:
         raise InputStreamError(_(_.IA_VERSION_REQUIRED, required=required_version, current=current_version))
 
