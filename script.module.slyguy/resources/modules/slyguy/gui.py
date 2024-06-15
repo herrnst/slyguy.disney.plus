@@ -350,6 +350,7 @@ class Item(object):
                 'poster': 'thumb',
                 'landscape': 'thumb',
                 'icon': 'thumb',
+                'banner': 'clearlogo',
             }
 
             art = {}
