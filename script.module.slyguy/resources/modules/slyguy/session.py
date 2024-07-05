@@ -20,13 +20,14 @@ except ImportError:
 from kodi_six import xbmc
 import dns.resolver
 
-from . import userdata, settings, signals, mem_cache
-from .util import get_kodi_proxy
-from .smart_urls import get_dns_rewrites
-from .log import log
-from .language import _
-from .exceptions import SessionError, Error
-from .constants import DEFAULT_USERAGENT, CHUNK_SIZE, KODI_VERSION
+from slyguy import userdata, settings, signals, mem_cache
+from slyguy.util import get_kodi_proxy
+from slyguy.smart_urls import get_dns_rewrites
+from slyguy.log import log
+from slyguy.language import _
+from slyguy.exceptions import SessionError, Error
+from slyguy.constants import DEFAULT_USERAGENT, CHUNK_SIZE, KODI_VERSION
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
