@@ -107,6 +107,7 @@ def redirect(url):
     function(**params)
     raise Exit()
 
+
 # router.dispatch('?_=_settings')
 def dispatch(url=None):
     if url is None:
@@ -139,3 +140,9 @@ def dispatch(url=None):
                 raise
 
     signals.emit(signals.AFTER_DISPATCH)
+
+
+signals.emit(signals.ON_ENTRY)
+if KODI_VERSION >= 19:
+    import atexit
+    atexit.register(lambda: signals.emit(signals.ON_EXIT))
