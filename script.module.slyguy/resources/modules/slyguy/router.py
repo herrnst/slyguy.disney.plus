@@ -5,10 +5,9 @@ try:
 except ImportError:
     from six.moves.urllib_parse import parse_qsl, urlparse, urlencode
 
-from slyguy import signals
+from slyguy import signals, _
 from slyguy.constants import *
 from slyguy.log import log
-from slyguy.language import _
 from slyguy.exceptions import RouterError, Exit
 
 

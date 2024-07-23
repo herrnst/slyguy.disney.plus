@@ -28,15 +28,13 @@ except ImportError:
 from kodi_six import xbmc
 from pycaption import detect_format, WebVTTWriter
 
-from slyguy import gui, settings, log
+from slyguy import gui, settings, log, _
 from slyguy.constants import *
 from slyguy.util import check_port, remove_file, get_kodi_string, set_kodi_string, fix_url, run_plugin, lang_allowed, fix_language
 from slyguy.exceptions import Exit
 from slyguy.session import RawSession
 from slyguy.router import add_url_args
 from slyguy.smart_urls import get_dns_rewrites
-
-from .language import _
 
 H264 = 'H.264'
 H265 = 'H.265'
@@ -1184,7 +1182,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     continue
 
                 if KODI_VERSION < 21:
-                    attribs['NAME'] = _(_.ATMOS, name=attribs['NAME'])
+                    attribs['NAME'] = _(_.ATMOS_LABEL, name=attribs['NAME'])
                     attribs['CHANNELS'] = attribs['CHANNELS'].split('/')[0]
 
             try:

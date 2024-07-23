@@ -6,11 +6,9 @@ import shutil
 
 from kodi_six import xbmc
 
-from slyguy import gui, settings
+from slyguy import gui, settings, log, _
 from slyguy.session import Session
-from slyguy.log import log
 from slyguy.constants import *
-from slyguy.language import _
 from slyguy.util import md5sum, remove_file, get_system_arch, get_addon, hash_6
 from slyguy.exceptions import InputStreamError, CancelDialog
 from slyguy.drm import is_wv_secure
