@@ -1110,7 +1110,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if video_range == 'PQ':
                     codecs.append('hdr')
 
-                stream_data = {'bandwidth': bandwidth, 'width': width, 'height': height, 'frame_rate': frame_rate, 'codecs': codecs, 'url': url, 'index': len(video), 'res_ok': True, 'compatible': True}
+                stream_data = {'bandwidth': bandwidth, 'width': width, 'height': height, 'frame_rate': frame_rate, 'codecs': codecs, 'url': url, 'full_url': line, 'index': len(video), 'res_ok': True, 'compatible': True}
                 if stream_data['bandwidth'] > max_bandwidth*1000000:
                     stream_data['res_ok'] = False
 
@@ -1147,7 +1147,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         # select quality
         selected = self._quality_select(streams)
         if selected:
-            video = [video[selected['index']]]
+            adjust = 0
+            for stream in all_streams:
+                if stream['full_url'] != selected['full_url']:
+                    video.pop(stream['index']-adjust)
+                    adjust += 1
 
         def set_default_laguage(defaults, rows):
             found = False
